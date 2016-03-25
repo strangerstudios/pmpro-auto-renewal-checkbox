@@ -222,11 +222,18 @@ function pmproarc_checkout_level($level)
 		$autorenew = intval($_REQUEST['autorenew']);		
 	elseif(isset($_SESSION['autorenew_present']))
 		$autorenew = intval($_SESSION['autorenew']);
+	elseif($options['setting'] == 2)
+		$autorenew = 1;
 	else
-		$autorenew = 0;		
-		
+		$autorenew = 0;
+	
 	if(!$autorenew)
 	{
+		//setup expiration
+		$level->expiration_number = $level->cycle_number;
+		$level->expiration_period = $level->cycle_period;
+
+		//remove recurring billing
 		$level->billing_amount = 0;
 		$level->cycle_number = 0;
 	}
