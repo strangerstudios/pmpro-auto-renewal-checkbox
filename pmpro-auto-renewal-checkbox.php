@@ -3,7 +3,7 @@
 Plugin Name: Paid Memberships Pro - Auto-Renewal Checkbox
 Plugin URI: www.paidmembershipspro.com/add-ons/plus-add-ons/pmpro-auto-renewal-checkbox/
 Description: Make auto-renewal optional at checkout with a checkbox.
-Version: .1
+Version: .2
 Author: Stranger Studios
 Author URI: http://www.strangerstudios.com
 */
@@ -206,7 +206,9 @@ function pmproarc_checkout_level($level) {
 	if(!empty($discount_code))
 		return $level;
 
-	if(isset($_REQUEST['autorenew_present']))
+	if(isset($_REQUEST['autorenew_present']) && empty($_REQUEST['autorenew']))
+		$autorenew = 0;
+	elseif(isset($_REQUEST['autorenew_present']))
 		$autorenew = intval($_REQUEST['autorenew']);		
 	elseif(isset($_SESSION['autorenew_present']))
 		$autorenew = intval($_SESSION['autorenew']);
@@ -228,3 +230,230 @@ function pmproarc_checkout_level($level) {
 	return $level;
 }
 add_filter("pmpro_checkout_level", "pmproarc_checkout_level", 7);
+
+/*
+	If checking out for a recurring version of your current level, and you have an expiration/enddate,
+	then set the profile to start on the day your membership was going to expire.
+
+	For example, if your membership expires in 10 days and you checkout for a recurring monthly subscription
+	for the same level, then you will the initial payment at checkout and your next payment will be one month
+	from your old expiration date.
+
+	We filter this a little early so other custom code (e.g. prorating code) will override this.
+*/
+function pmproarc_profile_start_date_delay_subscription($startdate, $order) {
+	//is this level recurring? does the user already have this level?
+	if(!empty($order->membership_level) && pmpro_isLevelRecurring($order->membership_level) && pmpro_hasMembershipLevel($order->membership_level->id)) {
+		//check for current expiration
+		$current_level = pmpro_getMembershipLevelForUser();	
+		if(!empty($current_level) && pmpro_isLevelExpiring($current_level)) {
+			$startdate = date('Y-m-d', strtotime($startdate, current_time('timestamp')) + $current_level->enddate + (3600*24) - current_time('timestamp'));
+		}
+	}
+
+	return $startdate;
+}
+add_filter('pmpro_profile_start_date', 'pmproarc_profile_start_date_delay_subscription', 9, 2);
+
+/*
+	If checking out without recurring with an active recurring subscription for the same level,
+	extend from the next payment date instead of the date of checkout.
+*/
+function pmproarc_checkout_level_extend_memberships($level)
+{		
+	//does this level expire? are they an existing user of this level?
+	if(!empty($level) && !empty($level->expiration_number) && pmpro_hasMembershipLevel($level->id))
+	{
+		//we want to make sure that we use APIs to get next payment date when available
+		add_filter('pmpro_next_payment', array('PMProGateway_stripe', 'pmpro_next_payment'), 10, 3);
+		add_filter('pmpro_next_payment', array('PMProGateway_paypalexpress', 'pmpro_next_payment'), 10, 3);
+
+		//recurring memberships will have a next payment date
+		$next_payment_date = pmpro_next_payment();
+
+		//calculate days left
+		$todays_date = current_time('timestamp');
+		$time_left = $next_payment_date + (3600*24) - $todays_date;
+
+		//time left?
+		if($time_left > 0)
+		{
+			//convert to days and add to the expiration date (assumes expiration was 1 year)
+			$days_left = floor($time_left/(60*60*24));
+
+			//figure out days based on period
+			if($level->expiration_period == "Day")
+				$total_days = $days_left + $level->expiration_number;
+			elseif($level->expiration_period == "Week")
+				$total_days = $days_left + $level->expiration_number * 7;
+			elseif($level->expiration_period == "Month")
+				$total_days = $days_left + $level->expiration_number * 30;
+			elseif($level->expiration_period == "Year")
+				$total_days = $days_left + $level->expiration_number * 365;
+
+			//update number and period
+			$level->expiration_number = $total_days;
+			$level->expiration_period = "Day";
+		}
+	}
+
+	return $level;
+}
+add_filter("pmpro_checkout_level", "pmproarc_checkout_level_extend_memberships", 15);
+
+/*
+  Change cancellation to set expiration date for next payment instead of cancelling immediately.
+	
+  Assumes orders are generated for each payment (i.e. your webhooks/etc are setup correctly).
+  
+  Since 2015-09-21 and PMPro v1.8.5.6 contains code to look up next payment dates via Stripe and PayPal Express APIs.
+*/
+//before cancelling, save the next_payment_timestamp to a global for later use. (Requires PMPro 1.8.5.6 or higher.)
+function pmproarc_pmpro_before_change_membership_level($level_id, $user_id)
+{
+	//are we on the cancel page?
+	global $pmpro_pages, $wpdb, $pmpro_stripe_event, $pmpro_next_payment_timestamp;
+	if($level_id == 0 && (is_page($pmpro_pages['cancel']) || (is_admin() && (empty($_REQUEST['from']) || $_REQUEST['from'] != 'profile'))))
+	{
+		//get last order
+		$order = new MemberOrder();
+		$order->getLastMemberOrder($user_id, "success");
+
+		//if stripe or PayPal, try to use the API
+		if(!empty($order) && $order->gateway == "stripe")
+		{
+			if(!empty($pmpro_stripe_event))
+			{
+				//cancel initiated from Stripe webhook
+				if(!empty($pmpro_stripe_event->data->object->current_period_end))
+				{
+					$pmpro_next_payment_timestamp = $pmpro_stripe_event->data->object->current_period_end;
+				}
+			}
+			else
+			{
+				//cancel initiated from PMPro
+				$pmpro_next_payment_timestamp = PMProGateway_stripe::pmpro_next_payment("", $user_id, "success");
+			}
+		}
+		elseif(!empty($order) && $order->gateway == "paypalexpress")
+		{
+			if(!empty($_POST['next_payment_date']) && $_POST['next_payment_date'] != 'N/A')
+			{
+				//cancel initiated from IPN
+				$pmpro_next_payment_timestamp = strtotime($_POST['next_payment_date'], current_time('timestamp'));
+			}
+			else
+			{
+				//cancel initiated from PMPro
+				$pmpro_next_payment_timestamp = PMProGateway_paypalexpress::pmpro_next_payment("", $user_id, "success");
+			}
+		}
+	}
+}
+add_action('pmpro_before_change_membership_level', 'pmproarc_pmpro_before_change_membership_level', 10, 2);
+
+//give users their level back with an expiration
+function pmproarc_pmpro_after_change_membership_level($level_id, $user_id)
+{
+	//are we on the cancel page?
+	global $pmpro_pages, $wpdb, $pmpro_next_payment_timestamp;
+	if($level_id == 0 && (is_page($pmpro_pages['cancel']) || (is_admin() && (empty($_REQUEST['from']) || $_REQUEST['from'] != 'profile'))))
+	{
+		/*
+			okay, let's give the user his old level back with an expiration based on his subscription date
+		*/
+		//get last order
+		$order = new MemberOrder();
+		$order->getLastMemberOrder($user_id, "cancelled");
+		
+		//can't do this if we can't find the order
+		if(empty($order->id))
+			return false;
+
+		//get the last level they had		
+		$level = $wpdb->get_row("SELECT * FROM $wpdb->pmpro_memberships_users WHERE membership_id = '" . $order->membership_id . "' AND user_id = '" . $user_id . "' ORDER BY id DESC LIMIT 1");
+
+		//can't do this if the level isn't recurring
+		if(empty($level->cycle_number))
+			return false;
+				
+		//can't do if we can't find an old level
+		if(empty($level))
+			return false;
+			
+		//last payment date
+		$lastdate = date("Y-m-d", $order->timestamp);
+				
+		/*
+			next payment date
+		*/
+		//if stripe or PayPal, try to use the API
+		if(!empty($pmpro_next_payment_timestamp))
+		{
+			$nextdate = $pmpro_next_payment_timestamp;
+		}
+		else
+		{
+			$nextdate = $wpdb->get_var("SELECT UNIX_TIMESTAMP('" . $lastdate . "' + INTERVAL " . $level->cycle_number . " " . $level->cycle_period . ")");
+		}
+
+		//if the date in the future?
+		if($nextdate - time() > 0)
+		{						
+			//give them their level back with the expiration date set
+			$old_level = $wpdb->get_row("SELECT * FROM $wpdb->pmpro_memberships_users WHERE membership_id = '" . $order->membership_id . "' AND user_id = '" . $user_id . "' ORDER BY id DESC LIMIT 1", ARRAY_A);
+			$old_level['enddate'] = date("Y-m-d H:i:s", $nextdate);
+
+			//disable this hook so we don't loop
+			remove_action("pmpro_after_change_membership_level", "my_pmpro_after_change_membership_level", 10, 2);
+			remove_filter('pmpro_cancel_previous_subscriptions', 'my_pmpro_cancel_previous_subscriptions');
+
+			//change level
+			pmpro_changeMembershipLevel($old_level, $user_id);
+			
+			//add the action back just in case
+			add_action("pmpro_after_change_membership_level", "my_pmpro_after_change_membership_level", 10, 2);
+			add_filter('pmpro_cancel_previous_subscriptions', 'my_pmpro_cancel_previous_subscriptions');
+
+			//change message shown on cancel page
+			add_filter("gettext", "my_gettext_cancel_text", 10, 3);
+		}
+	}
+}
+add_action("pmpro_after_change_membership_level", "pmproarc_pmpro_after_change_membership_level", 10, 2);
+ 
+//this replaces the cancellation text so people know they'll still have access for a certain amount of time
+function pmproarc_gettext_cancel_text($translated_text, $text, $domain)
+{
+	if($domain == "pmpro" && $text == "Your membership has been cancelled.")
+	{
+		global $current_user;
+		$translated_text = "Your recurring subscription has been cancelled. Your active membership will expire on " . date(get_option("date_format"), pmpro_next_payment($current_user->ID, "cancelled")) . ".";
+	}
+	
+	return $translated_text;
+}
+ 
+//want to update the cancellation email as well
+function pmproarc_pmpro_email_body($body, $email)
+{
+	if($email->template == "cancel")
+	{
+		global $wpdb;
+		$user_id = $wpdb->get_var("SELECT ID FROM $wpdb->users WHERE user_email = '" . esc_sql($email->email) . "' LIMIT 1");
+		if(!empty($user_id))
+		{
+			$expiration_date = pmpro_next_payment($user_id);
+			
+			//if the date in the future?
+			if($expiration_date - time() > 0)
+			{						
+				$body .= "<p>Your access will expire on " . date(get_option("date_format"), $expiration_date) . ".</p>";
+			}
+		}
+	}
+	
+	return $body;
+}
+add_filter("pmpro_email_body", "pmproarc_pmpro_email_body", 10, 2);
