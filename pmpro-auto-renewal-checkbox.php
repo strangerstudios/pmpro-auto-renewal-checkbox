@@ -26,8 +26,7 @@ add_action( 'plugins_loaded', 'pmproarc_load_textdomain' );
 	Add settings to the edit levels page
 */
 //show the checkbox on the edit level page
-function pmproarc_pmpro_membership_level_after_other_settings()
-{	
+function pmproarc_pmpro_membership_level_after_other_settings() { 
 	$level_id = intval($_REQUEST['edit']);
 	$options = pmproarc_getOptions($level_id);	
 ?>
@@ -55,7 +54,7 @@ function pmproarc_pmpro_membership_level_after_other_settings()
 				}
 			}
 			
-			jQuery(document).ready(function(){
+			jQuery(document).ready(function() {
 				//hide/show recurring fields on page load
 				toggleARCOptions();
 				
@@ -70,9 +69,8 @@ function pmproarc_pmpro_membership_level_after_other_settings()
 }
 add_action('pmpro_membership_level_after_other_settings', 'pmproarc_pmpro_membership_level_after_other_settings');
 
-//save pay by check settings when the level is saved/added
-function pmproarc_pmpro_save_membership_level($level_id)
-{
+//save auto-renewal settings when the level is saved/added
+function pmproarc_pmpro_save_membership_level($level_id) {
 	//get values
 	if(isset($_REQUEST['arc_setting']))
 		$arc_setting = intval($_REQUEST['arc_setting']);
@@ -92,15 +90,11 @@ add_action("pmpro_save_membership_level", "pmproarc_pmpro_save_membership_level"
 /*
 	Helper function to get options.
 */
-function pmproarc_getOptions($level_id)
-{
-	if($level_id > 0)
-	{
+function pmproarc_getOptions($level_id) {
+	if($level_id > 0) {
 		//option for level, check the DB
 		$options = get_option('pmpro_auto_renewal_checkbox_options_' . $level_id, array('setting'=>0));
-	}
-	else
-	{
+	} else {
 		//default for new level
 		$options = array('setting'=>0);
 	}
@@ -112,8 +106,7 @@ function pmproarc_getOptions($level_id)
 	Show the box at checkout and update the level.
 */
 //draw the box
-function pmproarc_pmpro_checkout_boxes()
-{
+function pmproarc_pmpro_checkout_boxes() {
 	global $pmpro_level, $pmpro_review, $discount_code;
 
 	//only for certain levels
@@ -142,8 +135,7 @@ function pmproarc_pmpro_checkout_boxes()
 	else
 		$autorenew = 0;
 		
-	if(!$pmpro_review)
-	{
+	if(!$pmpro_review) {
 	?>
 	<table id="pmpro_payment_method" class="pmpro_checkout top1em" width="100%" cellpadding="0" cellspacing="0" border="0">
 		<thead>
@@ -171,9 +163,7 @@ function pmproarc_pmpro_checkout_boxes()
 		</tbody>
 	</table>
 	<?php
-	}
-	else
-	{
+	} else {
 		if(!empty($_SESSION['autorenew']))		
 		?>
 		<input type="hidden" id="autorenew" name="autorenew" value="<?php $autorenew;?>" />
@@ -184,8 +174,7 @@ function pmproarc_pmpro_checkout_boxes()
 add_action('pmpro_checkout_boxes', 'pmproarc_pmpro_checkout_boxes', 15);
 
 //save autorenew to session for PayPal Express
-function pmproarc_pmpro_paypalexpress_session_vars()
-{
+function pmproarc_pmpro_paypalexpress_session_vars() {
 	if(isset($_REQUEST['autorenew_present']))
 		$autorenew = intval($_REQUEST['autorenew']);
 	else
@@ -197,8 +186,7 @@ function pmproarc_pmpro_paypalexpress_session_vars()
 add_action('pmpro_paypalexpress_session_vars', 'pmproarc_pmpro_paypalexpress_session_vars');
 
 //update level based on selection
-function pmproarc_checkout_level($level)
-{
+function pmproarc_checkout_level($level) {
 	global $discount_code;
 	
 	//only for certain levels
@@ -227,8 +215,7 @@ function pmproarc_checkout_level($level)
 	else
 		$autorenew = 0;
 	
-	if(!$autorenew)
-	{
+	if(!$autorenew) {
 		//setup expiration
 		$level->expiration_number = $level->cycle_number;
 		$level->expiration_period = $level->cycle_period;
