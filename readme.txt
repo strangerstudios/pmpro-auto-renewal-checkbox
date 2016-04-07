@@ -1,8 +1,8 @@
-=== Paid Memberships Pro: Auto Renewal Checkbox ===
+=== Paid Memberships Pro: Auto-Renewal Checkbox ===
 Contributors: strangerstudios
 Tags: pmpro, paid memberships pro, members, memberships, auto-renewal, renewal, checkbox
 Requires at least: 3.5
-Tested up to: 4.4.2
+Tested up to: 4.5
 Stable tag: .1
 
 Make auto renewal optional at checkout with a checkbox.
