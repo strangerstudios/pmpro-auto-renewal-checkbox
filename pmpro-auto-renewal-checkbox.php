@@ -406,18 +406,18 @@ function pmproarc_pmpro_after_change_membership_level($level_id, $user_id)
 			$old_level['enddate'] = date("Y-m-d H:i:s", $nextdate);
 
 			//disable this hook so we don't loop
-			remove_action("pmpro_after_change_membership_level", "my_pmpro_after_change_membership_level", 10, 2);
+			remove_action("pmpro_after_change_membership_level", "pmproarc_pmpro_after_change_membership_level", 10, 2);
 			remove_filter('pmpro_cancel_previous_subscriptions', 'my_pmpro_cancel_previous_subscriptions');
 
 			//change level
 			pmpro_changeMembershipLevel($old_level, $user_id);
 			
 			//add the action back just in case
-			add_action("pmpro_after_change_membership_level", "my_pmpro_after_change_membership_level", 10, 2);
+			add_action("pmpro_after_change_membership_level", "pmproarc_pmpro_after_change_membership_level", 10, 2);
 			add_filter('pmpro_cancel_previous_subscriptions', 'my_pmpro_cancel_previous_subscriptions');
 
 			//change message shown on cancel page
-			add_filter("gettext", "my_gettext_cancel_text", 10, 3);
+			add_filter("gettext", "pmproarc_gettext_cancel_text", 10, 3);
 		}
 	}
 }
