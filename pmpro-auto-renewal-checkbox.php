@@ -3,7 +3,7 @@
 Plugin Name: Paid Memberships Pro - Auto-Renewal Checkbox
 Plugin URI: www.paidmembershipspro.com/add-ons/plus-add-ons/pmpro-auto-renewal-checkbox/
 Description: Make auto-renewal optional at checkout with a checkbox.
-Version: .2
+Version: .2.1
 Author: Stranger Studios
 Author URI: http://www.strangerstudios.com
 */
@@ -407,14 +407,12 @@ function pmproarc_pmpro_after_change_membership_level($level_id, $user_id)
 
 			//disable this hook so we don't loop
 			remove_action("pmpro_after_change_membership_level", "pmproarc_pmpro_after_change_membership_level", 10, 2);
-			remove_filter('pmpro_cancel_previous_subscriptions', 'my_pmpro_cancel_previous_subscriptions');
 
 			//change level
 			pmpro_changeMembershipLevel($old_level, $user_id);
 			
 			//add the action back just in case
 			add_action("pmpro_after_change_membership_level", "pmproarc_pmpro_after_change_membership_level", 10, 2);
-			add_filter('pmpro_cancel_previous_subscriptions', 'my_pmpro_cancel_previous_subscriptions');
 
 			//change message shown on cancel page
 			add_filter("gettext", "pmproarc_gettext_cancel_text", 10, 3);
