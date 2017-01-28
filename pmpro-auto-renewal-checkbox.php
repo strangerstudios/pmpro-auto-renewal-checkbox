@@ -1,9 +1,9 @@
 <?php
 /*
 Plugin Name: Paid Memberships Pro - Auto-Renewal Checkbox
-Plugin URI: www.paidmembershipspro.com/add-ons/plus-add-ons/pmpro-auto-renewal-checkbox/
+Plugin URI: https://www.paidmembershipspro.com/add-ons/plus-add-ons/auto-renewal-checkbox-membership-checkout/
 Description: Make auto-renewal optional at checkout with a checkbox.
-Version: .2.1
+Version: .2.2
 Author: Stranger Studios
 Author URI: http://www.strangerstudios.com
 */
@@ -455,3 +455,18 @@ function pmproarc_pmpro_email_body($body, $email)
 	return $body;
 }
 add_filter("pmpro_email_body", "pmproarc_pmpro_email_body", 10, 2);
+
+/*
+Function to add links to the plugin row meta
+*/
+function pmproarc_plugin_row_meta($links, $file) {
+	if(strpos($file, 'pmpro-auto-renewal-checkbox') !== false) {
+		$new_links = array(
+			'<a href="' . esc_url('https://www.paidmembershipspro.com/add-ons/plus-add-ons/auto-renewal-checkbox-membership-checkout/' ) . '" title="' . esc_attr( __( 'View Documentation', 'pmpro' ) ) . '">' . __( 'Docs', 'pmpro' ) . '</a>',
+			'<a href="' . esc_url('https://paidmembershipspro.com/support/') . '" title="' . esc_attr( __( 'Visit Customer Support Forum', 'pmpro' ) ) . '">' . __( 'Support', 'pmpro' ) . '</a>',
+		);
+		$links = array_merge($links, $new_links);
+	}
+	return $links;
+}
+add_filter('plugin_row_meta', 'pmproarc_plugin_row_meta', 10, 2);
