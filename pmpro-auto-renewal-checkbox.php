@@ -189,6 +189,10 @@ add_action('pmpro_paypalexpress_session_vars', 'pmproarc_pmpro_paypalexpress_ses
 function pmproarc_checkout_level($level) {
 	global $discount_code;
 	
+	//no level anymore, just return it
+	if( empty( $level ) )
+		return $level;
+	
 	//only for certain levels
 	$options = pmproarc_getOptions($level->id);
 	if(empty($options) || empty($options['setting']))
