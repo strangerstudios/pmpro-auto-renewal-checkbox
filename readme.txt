@@ -2,8 +2,8 @@
 Contributors: strangerstudios
 Tags: pmpro, paid memberships pro, members, memberships, auto-renewal, renewal, checkbox
 Requires at least: 4
-Tested up to: 4.7.2
-Stable tag: .2.2
+Tested up to: 4.7.5
+Stable tag: .2.3
 
 Make auto renewal optional at checkout with a checkbox.
 
@@ -20,6 +20,9 @@ This does not work with PMPro discount codes yet. If a customer uses a discount 
 1. Edit your membership levels and set the "Auto Renewal" options for each level.
 
 == Changelog ==
+= .2.3 =
+* BUG FIX: Fixed issue where autorenew value was not being used when checking out via PayPal Express or another offsite gateway.
+
 = .2.2 =
 * BUG/ENHANCEMENT: Fixed the plugin URI
 * ENHANCEMENT: Added meta links to the plugins page for docs and support.
