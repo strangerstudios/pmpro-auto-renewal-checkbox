@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: Paid Memberships Pro - Auto-Renewal Checkbox
-Plugin URI: https://www.paidmembershipspro.com/add-ons/plus-add-ons/auto-renewal-checkbox-membership-checkout/
+Plugin URI: https://www.paidmembershipspro.com/add-ons/auto-renewal-checkbox-membership-checkout/
 Description: Make auto-renewal optional at checkout with a checkbox.
-Version: .2.3
-Author: Stranger Studios
-Author URI: http://www.strangerstudios.com
+Version: .2.4
+Author: Paid Memberships Pro
+Author URI: https://www.paidmembershipspro.com
 */
 
 /*
@@ -139,31 +139,26 @@ function pmproarc_pmpro_checkout_boxes() {
 		
 	if(!$pmpro_review) {
 	?>
-	<table id="pmpro_payment_method" class="pmpro_checkout top1em" width="100%" cellpadding="0" cellspacing="0" border="0">
-		<thead>
-			<tr>
-				<th><?php _e('Would you like to set up automatic renewals?', 'pmproarc');?></th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr>
-				<td>
-					<div>
-						<input type="checkbox" id="autorenew" name="autorenew" value="1" <?php checked($autorenew, 1);?> />
-						<input type="hidden" id="autorenew_present" name="autorenew_present" value="1" />
-						<label class="pmpro_normal pmpro_clickable" for="autorenew">
-							<?php 
-								//setup a temp level with initial = billing amount so the short level cost text looks nice
-								$temp_level = pmpro_getLevel($pmpro_level->id);
-								$temp_level->initial_payment = $temp_level->billing_amount;
-								printf(__('Yes, renew at %s', 'pmproarc'), pmpro_getLevelCost($temp_level, false, true)); 
-							?>
-						</label>
-					</div>
-				</td>
-			</tr>
-		</tbody>
-	</table>
+	<div id="pmpro_payment_method" class="pmpro_checkout">
+		<hr />
+		<h3>
+			<span class="pmpro_checkout-h3-name"><?php _e('Would you like to set up automatic renewals?', 'pmproarc');?></span>
+		</h3>
+		<div class="pmpro_checkout-fields">
+			<div class="pmpro_checkout-field pmpro_checkout-field-checkbox pmpro_checkout_field-autorenew">
+				<input type="checkbox" id="autorenew" name="autorenew" value="1" <?php checked($autorenew, 1);?> />
+				<input type="hidden" id="autorenew_present" name="autorenew_present" value="1" />
+				<label class="pmprorh_checkbox_label pmpro_clickable" for="autorenew">
+					<?php 
+						//setup a temp level with initial = billing amount so the short level cost text looks nice
+						$temp_level = pmpro_getLevel($pmpro_level->id);
+						$temp_level->initial_payment = $temp_level->billing_amount;
+						printf(__('Yes, renew at %s', 'pmproarc'), pmpro_getLevelCost($temp_level, false, true)); 
+					?>
+				</label>
+			</div>  <!-- end pmpro_checkout-field -->
+		</div> <!-- end pmpro_checkout-fields -->
+	</div> <!-- end pmpro_payment_method -->
 	<?php
 	} else {
 		if(!empty($_SESSION['autorenew']))		
@@ -468,7 +463,7 @@ Function to add links to the plugin row meta
 function pmproarc_plugin_row_meta($links, $file) {
 	if(strpos($file, 'pmpro-auto-renewal-checkbox') !== false) {
 		$new_links = array(
-			'<a href="' . esc_url('https://www.paidmembershipspro.com/add-ons/plus-add-ons/auto-renewal-checkbox-membership-checkout/' ) . '" title="' . esc_attr( __( 'View Documentation', 'pmpro' ) ) . '">' . __( 'Docs', 'pmpro' ) . '</a>',
+			'<a href="' . esc_url('https://www.paidmembershipspro.com/add-ons/auto-renewal-checkbox-membership-checkout/' ) . '" title="' . esc_attr( __( 'View Documentation', 'pmpro' ) ) . '">' . __( 'Docs', 'pmpro' ) . '</a>',
 			'<a href="' . esc_url('https://paidmembershipspro.com/support/') . '" title="' . esc_attr( __( 'Visit Customer Support Forum', 'pmpro' ) ) . '">' . __( 'Support', 'pmpro' ) . '</a>',
 		);
 		$links = array_merge($links, $new_links);
