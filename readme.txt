@@ -2,7 +2,7 @@
 Contributors: strangerstudios
 Tags: pmpro, paid memberships pro, members, memberships, auto-renewal, renewal, checkbox
 Requires at least: 4
-Tested up to: 4.7.5
+Tested up to: 4.8.2
 Stable tag: .2.4
 
 Make auto renewal optional at checkout with a checkbox.
