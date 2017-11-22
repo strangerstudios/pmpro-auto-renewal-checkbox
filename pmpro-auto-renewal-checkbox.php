@@ -145,7 +145,7 @@ function pmproarc_pmpro_checkout_boxes() {
 			<span class="pmpro_checkout-h3-name"><?php _e('Would you like to set up automatic renewals?', 'pmproarc');?></span>
 		</h3>
 		<div class="pmpro_checkout-fields">
-			<div class="pmpro_checkout-field pmpro_checkout-field-checkbox pmpro_checkout_field-autorenew">
+			<div class="pmpro_checkout-field-checkbox pmpro_checkout_field-autorenew">
 				<input type="checkbox" id="autorenew" name="autorenew" value="1" <?php checked($autorenew, 1);?> />
 				<input type="hidden" id="autorenew_present" name="autorenew_present" value="1" />
 				<label class="pmprorh_checkbox_label pmpro_clickable" for="autorenew">
@@ -156,11 +156,11 @@ function pmproarc_pmpro_checkout_boxes() {
 						$temp_level = apply_filters('pmpro_checkout_level', $temp_level);
 						add_filter("pmpro_checkout_level", "pmproarc_checkout_level", 7);
 						$temp_level->initial_payment = $temp_level->billing_amount;
-						printf(__('Yes, renew at %s', 'pmproarc'), pmpro_getLevelCost($temp_level, false, true));
+						printf(__('Yes, renew at %s', 'pmproarc'), pmpro_getLevelCost($temp_level, false, true)); 
 					?>
 				</label>
 			</div>  <!-- end pmpro_checkout-field -->
-		</div> <!-- end pmpro_checkout-fields -->
+		</div> <!-- end pmpro_checkout-fields -->		
 	</div> <!-- end pmpro_payment_method -->
 	<?php
 	} else {
