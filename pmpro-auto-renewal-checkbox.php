@@ -152,8 +152,11 @@ function pmproarc_pmpro_checkout_boxes() {
 					<?php 
 						//setup a temp level with initial = billing amount so the short level cost text looks nice
 						$temp_level = pmpro_getLevel($pmpro_level->id);
+						remove_filter("pmpro_checkout_level", "pmproarc_checkout_level", 7);
+						$temp_level = apply_filters('pmpro_checkout_level', $temp_level);
+						add_filter("pmpro_checkout_level", "pmproarc_checkout_level", 7);
 						$temp_level->initial_payment = $temp_level->billing_amount;
-						printf(__('Yes, renew at %s', 'pmproarc'), pmpro_getLevelCost($temp_level, false, true)); 
+						printf(__('Yes, renew at %s', 'pmproarc'), pmpro_getLevelCost($temp_level, false, true));
 					?>
 				</label>
 			</div>  <!-- end pmpro_checkout-field -->
