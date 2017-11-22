@@ -22,6 +22,7 @@ This does not work with PMPro discount codes yet. If a customer uses a discount 
 == Changelog ==
 = .2.5 =
 * BUG FIX/ENHANCEMENT: Fixed issue where checkbox was sometimes showing up right of the label instead of to the left of it.
+* BUG FIX/ENHANCEMENT: Fixed issue where the auto-renewal logic was sometimes being checked when a discount code was used (auto-renewal should be ignored if a discount code is used).
 * ENHANCEMENT: Running the pmpro_checkout_level filter on before figuring out the renewal price on the checkout page.
 
 = .2.4 =

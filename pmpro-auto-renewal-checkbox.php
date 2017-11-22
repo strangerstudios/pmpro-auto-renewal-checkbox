@@ -3,7 +3,7 @@
 Plugin Name: Paid Memberships Pro - Auto-Renewal Checkbox
 Plugin URI: https://www.paidmembershipspro.com/add-ons/auto-renewal-checkbox-membership-checkout/
 Description: Make auto-renewal optional at checkout with a checkbox.
-Version: .2.4
+Version: .2.5
 Author: Paid Memberships Pro
 Author URI: https://www.paidmembershipspro.com
 */
@@ -125,7 +125,7 @@ function pmproarc_pmpro_checkout_boxes() {
 		return;
 	
 	//not if using a discount code
-	if(!empty($discount_code))
+	if(!empty($discount_code) || !empty($_REQUEST['discount_code']))
 		return;
 
 	if(isset($_REQUEST['autorenew_present']))
