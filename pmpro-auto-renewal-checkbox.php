@@ -139,7 +139,7 @@ function pmproarc_pmpro_checkout_boxes() {
 		
 	if(!$pmpro_review) {
 	?>
-	<div id="pmpro_payment_method" class="pmpro_checkout">
+	<div id="pmpro_autorenewal_checkbox" class="pmpro_checkout">
 		<hr />
 		<h3>
 			<span class="pmpro_checkout-h3-name"><?php _e('Would you like to set up automatic renewals?', 'pmproarc');?></span>
