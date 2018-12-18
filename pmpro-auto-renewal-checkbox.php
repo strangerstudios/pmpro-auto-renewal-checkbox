@@ -3,7 +3,7 @@
 Plugin Name: Paid Memberships Pro - Auto-Renewal Checkbox
 Plugin URI: https://www.paidmembershipspro.com/add-ons/auto-renewal-checkbox-membership-checkout/
 Description: Make auto-renewal optional at checkout with a checkbox.
-Version: .2.5
+Version: .2.6
 Author: Paid Memberships Pro
 Author URI: https://www.paidmembershipspro.com
 */
@@ -331,7 +331,14 @@ function pmproarc_pmpro_before_change_membership_level($level_id, $user_id)
 				//cancel initiated from Stripe webhook
 				if(!empty($pmpro_stripe_event->data->object->current_period_end))
 				{
-					$pmpro_next_payment_timestamp = $pmpro_stripe_event->data->object->current_period_end;
+                    $customer = $order->Gateway->getCustomer($order);
+                    if( !empty( $customer ) && ! empty( $customer->delinquent ) ) {
+                        // cancelling early, next payment at period end
+                        $pmpro_next_payment_timestamp = $pmpro_stripe_event->data->object->current_period_end;
+                    } else {
+                        // delinquent, so next payment is in the past
+                        $pmpro_next_payment_timestamp = $pmpro_stripe_event->data->object->current_period_start;
+                    }
 				}
 			}
 			else
@@ -403,7 +410,7 @@ function pmproarc_pmpro_after_change_membership_level($level_id, $user_id)
 		}
 
 		//if the date in the future?
-		if($nextdate - time() > 0)
+		if($nextdate - current_time('timestamp') > 0)
 		{						
 			//give them their level back with the expiration date set
 			$old_level = $wpdb->get_row("SELECT * FROM $wpdb->pmpro_memberships_users WHERE membership_id = '" . $order->membership_id . "' AND user_id = '" . $user_id . "' ORDER BY id DESC LIMIT 1", ARRAY_A);
@@ -449,7 +456,7 @@ function pmproarc_pmpro_email_body($body, $email)
 			$expiration_date = pmpro_next_payment($user_id);
 			
 			//if the date in the future?
-			if($expiration_date - time() > 0)
+			if($expiration_date - current_time('timestamp') > 0)
 			{						
 				$body .= "<p>Your access will expire on " . date(get_option("date_format"), $expiration_date) . ".</p>";
 			}
