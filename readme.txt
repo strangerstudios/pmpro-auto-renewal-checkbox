@@ -21,7 +21,8 @@ This does not work with PMPro discount codes yet. If a customer uses a discount 
 
 == Changelog ==
 = .2.6 =
-* When using Stripe, checking if the customer is delinquent before set the expiration date to the "current_period_end" value.
+* BUG FIX: When using Stripe, checking if the customer is delinquent before set the expiration date to the "current_period_end" value.
+* BUG FIX: Fixed warning at checkout that sometimes conflicted with checkout via gateways like PayPal.
 
 = .2.5 =
 * BUG FIX/ENHANCEMENT: Fixed issue where checkbox was sometimes showing up right of the label instead of to the left of it.
