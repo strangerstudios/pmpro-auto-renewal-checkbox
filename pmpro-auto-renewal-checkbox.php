@@ -17,7 +17,7 @@ define("PMPRO_AUTO_RENEWAL_CHECKBOX_DIR", dirname(__FILE__));
 	Load plugin textdomain.
 */
 function pmproarc_load_textdomain() {
-  load_plugin_textdomain( 'pmproarc', false, plugin_basename( dirname( __FILE__ ) ) . '/languages' ); 
+  load_plugin_textdomain( 'pmproarc', false, plugin_basename( dirname( __FILE__ ) ) . '/languages' );
 }
 add_action( 'plugins_loaded', 'pmproarc_load_textdomain' );
 
@@ -26,9 +26,9 @@ add_action( 'plugins_loaded', 'pmproarc_load_textdomain' );
 	Add settings to the edit levels page
 */
 //show the checkbox on the edit level page
-function pmproarc_pmpro_membership_level_after_other_settings() { 
+function pmproarc_pmpro_membership_level_after_other_settings() {
 	$level_id = intval($_REQUEST['edit']);
-	$options = pmproarc_getOptions($level_id);	
+	$options = pmproarc_getOptions($level_id);
 ?>
 <div id="arc_setting_div">
 	<h3 class="topborder"><?php _e('Auto-Renewal Settings', 'pmproarc');?></h3>
@@ -47,17 +47,17 @@ function pmproarc_pmpro_membership_level_after_other_settings() {
 		</tr>
 		<script>
 			function toggleARCOptions() {
-				if(jQuery('#recurring').is(':checked')) { 
-					jQuery('#arc_setting_div').show(); 
+				if(jQuery('#recurring').is(':checked')) {
+					jQuery('#arc_setting_div').show();
 				} else {
-					jQuery('#arc_setting_div').hide(); 
+					jQuery('#arc_setting_div').hide();
 				}
 			}
-			
+
 			jQuery(document).ready(function() {
 				//hide/show recurring fields on page load
 				toggleARCOptions();
-				
+
 				//hide/show fields when recurring settings change
 				jQuery('#recurring').change(function() { toggleARCOptions() });
 			});
@@ -76,12 +76,12 @@ function pmproarc_pmpro_save_membership_level($level_id) {
 		$arc_setting = intval($_REQUEST['arc_setting']);
 	else
 		$arc_setting = 0;
-	
+
 	//build array
 	$options = array(
 		'setting' => $arc_setting,
 	);
-	
+
 	//save
 	update_option('pmpro_auto_renewal_checkbox_options_' . intval($level_id), $options, "", "no");
 }
@@ -98,7 +98,7 @@ function pmproarc_getOptions($level_id) {
 		//default for new level
 		$options = array('setting'=>0);
 	}
-	
+
 	return $options;
 }
 
@@ -111,7 +111,7 @@ function pmproarc_pmpro_checkout_boxes() {
 
 	//only for certain levels
 	$options = pmproarc_getOptions($pmpro_level->id);
-	
+
 	if(empty($options) || empty($options['setting']))
 		return;
 
@@ -123,7 +123,7 @@ function pmproarc_pmpro_checkout_boxes() {
 	//not if this is an addon package
 	if(!empty($_REQUEST['ap']) || !empty($_SESSION['ap']))
 		return;
-	
+
 	//not if using a discount code
 	if(!empty($discount_code) || !empty($_REQUEST['discount_code']))
 		return;
@@ -136,7 +136,7 @@ function pmproarc_pmpro_checkout_boxes() {
 		$autorenew = 1;
 	else
 		$autorenew = 0;
-		
+
 	if(!$pmpro_review) {
 	?>
 	<div id="pmpro_autorenewal_checkbox" class="pmpro_checkout">
@@ -149,22 +149,22 @@ function pmproarc_pmpro_checkout_boxes() {
 				<input type="checkbox" id="autorenew" name="autorenew" value="1" <?php checked($autorenew, 1);?> />
 				<input type="hidden" id="autorenew_present" name="autorenew_present" value="1" />
 				<label class="pmprorh_checkbox_label pmpro_clickable" for="autorenew">
-					<?php 
+					<?php
 						//setup a temp level with initial = billing amount so the short level cost text looks nice
 						$temp_level = pmpro_getLevel($pmpro_level->id);
 						remove_filter("pmpro_checkout_level", "pmproarc_checkout_level", 7);
 						$temp_level = apply_filters('pmpro_checkout_level', $temp_level);
 						add_filter("pmpro_checkout_level", "pmproarc_checkout_level", 7);
 						$temp_level->initial_payment = $temp_level->billing_amount;
-						printf(__('Yes, renew at %s', 'pmproarc'), pmpro_getLevelCost($temp_level, false, true)); 
+						printf(__('Yes, renew at %s', 'pmproarc'), pmpro_getLevelCost($temp_level, false, true));
 					?>
 				</label>
 			</div>  <!-- end pmpro_checkout-field -->
-		</div> <!-- end pmpro_checkout-fields -->		
+		</div> <!-- end pmpro_checkout-fields -->
 	</div> <!-- end pmpro_payment_method -->
 	<?php
 	} else {
-		if(!empty($_SESSION['autorenew']))		
+		if(!empty($_SESSION['autorenew']))
 		?>
 		<input type="hidden" id="autorenew" name="autorenew" value="<?php echo intval($autorenew);?>" />
 		<input type="hidden" id="autorenew_present" name="autorenew_present" value="1" />
@@ -175,24 +175,24 @@ add_action('pmpro_checkout_boxes', 'pmproarc_pmpro_checkout_boxes', 15);
 
 //save autorenew to session for PayPal Express
 function pmproarc_pmpro_paypalexpress_session_vars() {
-	if(isset($_REQUEST['autorenew_present']))
+	if(isset($_REQUEST['autorenew_present']) && isset($_REQUEST['autorenew']))
 		$autorenew = intval($_REQUEST['autorenew']);
 	else
 		$autorenew = 0;
-		
+
 	$_SESSION['autorenew'] = $autorenew;
-	$_SESSION['autorenew_present'] = 1;		
+	$_SESSION['autorenew_present'] = 1;
 }
 add_action('pmpro_paypalexpress_session_vars', 'pmproarc_pmpro_paypalexpress_session_vars');
 
 //update level based on selection
 function pmproarc_checkout_level($level) {
 	global $discount_code;
-	
+
 	//no level anymore, just return it
 	if( empty( $level ) )
 		return $level;
-	
+
 	//only for certain levels
 	$options = pmproarc_getOptions($level->id);
 	if(empty($options) || empty($options['setting']))
@@ -201,7 +201,7 @@ function pmproarc_checkout_level($level) {
 	//maybe the level doesn't have a recurring billing amount
 	if(!pmpro_isLevelRecurring($level))
 		return $level;
-	
+
 	//not if addon package
 	if(!empty($_REQUEST['ap']) || !empty($_SESSION['ap']))
 		return $level;
@@ -213,14 +213,14 @@ function pmproarc_checkout_level($level) {
 	if(isset($_REQUEST['autorenew_present']) && empty($_REQUEST['autorenew']))
 		$autorenew = 0;
 	elseif(isset($_REQUEST['autorenew_present']))
-		$autorenew = intval($_REQUEST['autorenew']);		
+		$autorenew = intval($_REQUEST['autorenew']);
 	elseif(isset($_SESSION['autorenew_present']))
 		$autorenew = intval($_SESSION['autorenew']);
 	elseif($options['setting'] == 2)
 		$autorenew = 1;
 	else
 		$autorenew = 0;
-	
+
 	if(!$autorenew) {
 		//setup expiration
 		$level->expiration_number = $level->cycle_number;
@@ -230,7 +230,7 @@ function pmproarc_checkout_level($level) {
 		$level->billing_amount = 0;
 		$level->cycle_number = 0;
 	}
-		
+
 	return $level;
 }
 add_filter("pmpro_checkout_level", "pmproarc_checkout_level", 7);
@@ -249,7 +249,7 @@ function pmproarc_profile_start_date_delay_subscription($startdate, $order) {
 	//is this level recurring? does the user already have this level?
 	if(!empty($order->membership_level) && pmpro_isLevelRecurring($order->membership_level) && pmpro_hasMembershipLevel($order->membership_level->id)) {
 		//check for current expiration
-		$current_level = pmpro_getMembershipLevelForUser();	
+		$current_level = pmpro_getMembershipLevelForUser();
 		if(!empty($current_level) && pmpro_isLevelExpiring($current_level)) {
 			$startdate = date('Y-m-d', strtotime($startdate, current_time('timestamp')) + $current_level->enddate + (3600*24) - current_time('timestamp'));
 		}
@@ -264,7 +264,7 @@ add_filter('pmpro_profile_start_date', 'pmproarc_profile_start_date_delay_subscr
 	extend from the next payment date instead of the date of checkout.
 */
 function pmproarc_checkout_level_extend_memberships($level)
-{		
+{
 	//does this level expire? are they an existing user of this level?
 	if(!empty($level) && !empty($level->expiration_number) && pmpro_hasMembershipLevel($level->id))
 	{
@@ -307,9 +307,9 @@ add_filter("pmpro_checkout_level", "pmproarc_checkout_level_extend_memberships",
 
 /*
   Change cancellation to set expiration date for next payment instead of cancelling immediately.
-	
+
   Assumes orders are generated for each payment (i.e. your webhooks/etc are setup correctly).
-  
+
   Since 2015-09-21 and PMPro v1.8.5.6 contains code to look up next payment dates via Stripe and PayPal Express APIs.
 */
 //before cancelling, save the next_payment_timestamp to a global for later use. (Requires PMPro 1.8.5.6 or higher.)
@@ -377,25 +377,25 @@ function pmproarc_pmpro_after_change_membership_level($level_id, $user_id)
 		//get last order
 		$order = new MemberOrder();
 		$order->getLastMemberOrder($user_id, "cancelled");
-		
+
 		//can't do this if we can't find the order
 		if(empty($order->id))
 			return false;
 
-		//get the last level they had		
+		//get the last level they had
 		$level = $wpdb->get_row("SELECT * FROM $wpdb->pmpro_memberships_users WHERE membership_id = '" . $order->membership_id . "' AND user_id = '" . $user_id . "' ORDER BY id DESC LIMIT 1");
 
 		//can't do this if the level isn't recurring
 		if(empty($level->cycle_number))
 			return false;
-				
+
 		//can't do if we can't find an old level
 		if(empty($level))
 			return false;
-			
+
 		//last payment date
 		$lastdate = date("Y-m-d", $order->timestamp);
-				
+
 		/*
 			next payment date
 		*/
@@ -421,7 +421,7 @@ function pmproarc_pmpro_after_change_membership_level($level_id, $user_id)
 
 			//change level
 			pmpro_changeMembershipLevel($old_level, $user_id);
-			
+
 			//add the action back just in case
 			add_action("pmpro_after_change_membership_level", "pmproarc_pmpro_after_change_membership_level", 10, 2);
 
@@ -431,7 +431,7 @@ function pmproarc_pmpro_after_change_membership_level($level_id, $user_id)
 	}
 }
 add_action("pmpro_after_change_membership_level", "pmproarc_pmpro_after_change_membership_level", 10, 2);
- 
+
 //this replaces the cancellation text so people know they'll still have access for a certain amount of time
 function pmproarc_gettext_cancel_text($translated_text, $text, $domain)
 {
@@ -440,10 +440,10 @@ function pmproarc_gettext_cancel_text($translated_text, $text, $domain)
 		global $current_user;
 		$translated_text = "Your recurring subscription has been cancelled. Your active membership will expire on " . date(get_option("date_format"), pmpro_next_payment($current_user->ID, "cancelled")) . ".";
 	}
-	
+
 	return $translated_text;
 }
- 
+
 //want to update the cancellation email as well
 function pmproarc_pmpro_email_body($body, $email)
 {
@@ -454,7 +454,7 @@ function pmproarc_pmpro_email_body($body, $email)
 		if(!empty($user_id))
 		{
 			$expiration_date = pmpro_next_payment($user_id);
-			
+
 			//if the date in the future?
 			if($expiration_date - current_time('timestamp') > 0)
 			{						
@@ -462,7 +462,7 @@ function pmproarc_pmpro_email_body($body, $email)
 			}
 		}
 	}
-	
+
 	return $body;
 }
 add_filter("pmpro_email_body", "pmproarc_pmpro_email_body", 10, 2);
