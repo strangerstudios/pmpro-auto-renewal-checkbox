@@ -251,10 +251,10 @@ function pmproarc_profile_start_date_delay_subscription($startdate, $order) {
 		//check for current expiration
 		$current_level = pmpro_getMembershipLevelForUser();
 		if(!empty($current_level) && pmpro_isLevelExpiring($current_level)) {
-			$startdate = date('Y-m-d', strtotime($startdate, current_time('timestamp')) + $current_level->enddate + (3600*24) - current_time('timestamp'));
+			$startdate = date('Y-m-d', strtotime($startdate, current_time('timestamp')) + $current_level->enddate + (3600*24) - current_time('timestamp')) . 'T0:0:0';
 		}
 	}
-
+    
 	return $startdate;
 }
 add_filter('pmpro_profile_start_date', 'pmproarc_profile_start_date_delay_subscription', 9, 2);
