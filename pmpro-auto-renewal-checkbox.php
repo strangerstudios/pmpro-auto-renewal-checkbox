@@ -435,7 +435,7 @@ add_action("pmpro_after_change_membership_level", "pmproarc_pmpro_after_change_m
 //this replaces the cancellation text so people know they'll still have access for a certain amount of time
 function pmproarc_gettext_cancel_text($translated_text, $text, $domain)
 {
-	if($domain == "pmpro" && $text == "Your membership has been cancelled.")
+	if($domain == "paid-memberships-pro" && $text == "Your membership has been cancelled.")
 	{
 		global $current_user;
 		$translated_text = "Your recurring subscription has been cancelled. Your active membership will expire on " . date(get_option("date_format"), pmpro_next_payment($current_user->ID, "cancelled")) . ".";
