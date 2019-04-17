@@ -453,7 +453,7 @@ function pmproarc_pmpro_email_body($body, $email)
 		$user_id = $wpdb->get_var("SELECT ID FROM $wpdb->users WHERE user_email = '" . esc_sql($email->email) . "' LIMIT 1");
 		if(!empty($user_id))
 		{
-			$expiration_date = pmpro_next_payment($user_id);
+			$expiration_date = pmpro_next_payment( $user_id, 'cancelled' );
 
 			//if the date in the future?
 			if($expiration_date - current_time('timestamp') > 0)
