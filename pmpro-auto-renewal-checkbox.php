@@ -3,7 +3,7 @@
 Plugin Name: Paid Memberships Pro - Auto-Renewal Checkbox
 Plugin URI: https://www.paidmembershipspro.com/add-ons/auto-renewal-checkbox-membership-checkout/
 Description: Make auto-renewal optional at checkout with a checkbox.
-Version: .2.6
+Version: .2.7
 Author: Paid Memberships Pro
 Author URI: https://www.paidmembershipspro.com
 */
@@ -251,10 +251,10 @@ function pmproarc_profile_start_date_delay_subscription($startdate, $order) {
 		//check for current expiration
 		$current_level = pmpro_getMembershipLevelForUser();
 		if(!empty($current_level) && pmpro_isLevelExpiring($current_level)) {
-			$startdate = date('Y-m-d', strtotime($startdate, current_time('timestamp')) + $current_level->enddate + (3600*24) - current_time('timestamp'));
+			$startdate = date('Y-m-d', strtotime($startdate, current_time('timestamp')) + $current_level->enddate + (3600*24) - current_time('timestamp')) . 'T0:0:0';
 		}
 	}
-
+    
 	return $startdate;
 }
 add_filter('pmpro_profile_start_date', 'pmproarc_profile_start_date_delay_subscription', 9, 2);
@@ -435,7 +435,7 @@ add_action("pmpro_after_change_membership_level", "pmproarc_pmpro_after_change_m
 //this replaces the cancellation text so people know they'll still have access for a certain amount of time
 function pmproarc_gettext_cancel_text($translated_text, $text, $domain)
 {
-	if($domain == "pmpro" && $text == "Your membership has been cancelled.")
+	if($domain == "paid-memberships-pro" && $text == "Your membership has been cancelled.")
 	{
 		global $current_user;
 		$translated_text = "Your recurring subscription has been cancelled. Your active membership will expire on " . date(get_option("date_format"), pmpro_next_payment($current_user->ID, "cancelled")) . ".";
@@ -453,7 +453,7 @@ function pmproarc_pmpro_email_body($body, $email)
 		$user_id = $wpdb->get_var("SELECT ID FROM $wpdb->users WHERE user_email = '" . esc_sql($email->email) . "' LIMIT 1");
 		if(!empty($user_id))
 		{
-			$expiration_date = pmpro_next_payment($user_id);
+			$expiration_date = pmpro_next_payment( $user_id, 'cancelled' );
 
 			//if the date in the future?
 			if($expiration_date - current_time('timestamp') > 0)
