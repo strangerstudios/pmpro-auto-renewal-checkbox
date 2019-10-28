@@ -128,7 +128,7 @@ function pmproarc_pmpro_checkout_boxes() {
 	if(!empty($discount_code) || !empty($_REQUEST['discount_code']))
 		return;
 
-	if(isset($_REQUEST['autorenew_present']))
+	if(isset($_REQUEST['autorenew_present']) && isset($_REQUEST['autorenew']))
 		$autorenew = intval($_REQUEST['autorenew']);
 	elseif(isset($_SESSION['autorenew']))
 		$autorenew = $_SESSION['autorenew'];
