@@ -332,7 +332,7 @@ function pmproarc_pmpro_before_change_membership_level($level_id, $user_id)
 				if(!empty($pmpro_stripe_event->data->object->current_period_end))
 				{
                     $customer = $order->Gateway->getCustomer($order);
-                    if( !empty( $customer ) && ! empty( $customer->delinquent ) ) {
+                    if( !empty( $customer ) && empty( $customer->delinquent ) ) {
                         // cancelling early, next payment at period end
                         $pmpro_next_payment_timestamp = $pmpro_stripe_event->data->object->current_period_end;
                     } else {
