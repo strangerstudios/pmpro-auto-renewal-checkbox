@@ -322,43 +322,45 @@ function pmproarc_pmpro_before_change_membership_level($level_id, $user_id)
 		//get last order
 		$order = new MemberOrder();
 		$order->getLastMemberOrder($user_id, "success");
-
-		//if stripe or PayPal, try to use the API
-		if(!empty($order) && $order->gateway == "stripe")
-		{
-			if(!empty($pmpro_stripe_event))
-			{
+		
+		//get level to check if it already has an end date
+		if(!empty($order) && !empty($order->membership_id)) {
+			$level = $wpdb->get_row("SELECT * FROM $wpdb->pmpro_memberships_users WHERE membership_id = '" . esc_sql( $order->membership_id ) . "' AND user_id = '" . esc_sql( $user_id ) . "' ORDER BY id DESC LIMIT 1");
+		}
+				
+		//figure out the next payment timestamp
+		if(empty($level) || (!empty($level->enddate) && $level->enddate != '0000-00-00 00:00:00')) {
+			//level already has an end date. set to false so we really cancel.
+			$pmpro_next_payment_timestamp = false;			
+		} elseif(!empty($order) && $order->gateway == "stripe") {
+			//if stripe, try to use the API
+			if(!empty($pmpro_stripe_event)) {
 				//cancel initiated from Stripe webhook
-				if(!empty($pmpro_stripe_event->data->object->current_period_end))
-				{
-                    $customer = $order->Gateway->getCustomer($order);
-                    if( !empty( $customer ) && empty( $customer->delinquent ) ) {
-                        // cancelling early, next payment at period end
-                        $pmpro_next_payment_timestamp = $pmpro_stripe_event->data->object->current_period_end;
-                    } else {
-                        // delinquent, so next payment is in the past
-                        $pmpro_next_payment_timestamp = $pmpro_stripe_event->data->object->current_period_start;
-                    }
+				if(!empty($pmpro_stripe_event->data->object->current_period_end)) {
+					$customer = $order->Gateway->getCustomer($order);
+					if( !empty( $customer ) && empty( $customer->delinquent ) ) {
+						// cancelling early, next payment at period end
+						$pmpro_next_payment_timestamp = $pmpro_stripe_event->data->object->current_period_end;
+					} else {
+						// delinquent, so next payment is in the past
+						$pmpro_next_payment_timestamp = $pmpro_stripe_event->data->object->current_period_start;
+					}
 				}
-			}
-			else
-			{
+			} else {
 				//cancel initiated from PMPro
 				$pmpro_next_payment_timestamp = PMProGateway_stripe::pmpro_next_payment("", $user_id, "success");
 			}
-		}
-		elseif(!empty($order) && $order->gateway == "paypalexpress")
-		{
-			if(!empty($_POST['next_payment_date']) && $_POST['next_payment_date'] != 'N/A')
-			{
+		} elseif(!empty($order) && $order->gateway == "paypalexpress") {
+			if(!empty($_POST['next_payment_date']) && $_POST['next_payment_date'] != 'N/A') {
 				//cancel initiated from IPN
 				$pmpro_next_payment_timestamp = strtotime($_POST['next_payment_date'], current_time('timestamp'));
-			}
-			else
-			{
+			} else {
 				//cancel initiated from PMPro
 				$pmpro_next_payment_timestamp = PMProGateway_paypalexpress::pmpro_next_payment("", $user_id, "success");
 			}
+		} else {
+			//use built in PMPro function to guess next payment date
+			$pmpro_next_payment_timestamp = pmpro_next_payment($user_id);
 		}
 	}
 }
@@ -369,7 +371,7 @@ function pmproarc_pmpro_after_change_membership_level($level_id, $user_id)
 {
 	//are we on the cancel page?
 	global $pmpro_pages, $wpdb, $pmpro_next_payment_timestamp;
-	if($level_id == 0 && (is_page($pmpro_pages['cancel']) || (is_admin() && (empty($_REQUEST['from']) || $_REQUEST['from'] != 'profile'))))
+	if($pmpro_next_payment_timestamp !== false && $level_id == 0 && (is_page($pmpro_pages['cancel']) || (is_admin() && (empty($_REQUEST['from']) || $_REQUEST['from'] != 'profile'))))
 	{
 		/*
 			okay, let's give the user his old level back with an expiration based on his subscription date
