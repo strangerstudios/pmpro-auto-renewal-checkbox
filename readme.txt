@@ -2,8 +2,8 @@
 Contributors: strangerstudios
 Tags: pmpro, paid memberships pro, members, memberships, auto-renewal, renewal, checkbox
 Requires at least: 4
-Tested up to: 5.1.1
-Stable tag: .2.7
+Tested up to: 5.2.4
+Stable tag: .2.8
 
 Make auto renewal optional at checkout with a checkbox.
 
@@ -20,6 +20,9 @@ This does not work with PMPro discount codes yet. If a customer uses a discount 
 1. Edit your membership levels and set the "Auto Renewal" options for each level.
 
 == Changelog ==
+
+= .2.8 =
+* BUG FIX: Fixed issues with cancellation.
 
 = .2.7 =
 * BUG FIX: Replacing Cancel page text when membership is extended instead of cancelled.
