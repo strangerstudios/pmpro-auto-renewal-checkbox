@@ -6,6 +6,8 @@ Description: Make auto-renewal optional at checkout with a checkbox.
 Version: .2.8
 Author: Paid Memberships Pro
 Author URI: https://www.paidmembershipspro.com
+Text Domain: pmpro-auto-renewal-checkbox
+Domain Path: /languages
 */
 
 /*
@@ -17,7 +19,7 @@ define("PMPRO_AUTO_RENEWAL_CHECKBOX_DIR", dirname(__FILE__));
 	Load plugin textdomain.
 */
 function pmproarc_load_textdomain() {
-  load_plugin_textdomain( 'pmproarc', false, plugin_basename( dirname( __FILE__ ) ) . '/languages' );
+  load_plugin_textdomain( 'pmpro-auto-renewal-checkbox', false, plugin_basename( dirname( __FILE__ ) ) . '/languages' );
 }
 add_action( 'plugins_loaded', 'pmproarc_load_textdomain' );
 
@@ -31,17 +33,17 @@ function pmproarc_pmpro_membership_level_after_other_settings() {
 	$options = pmproarc_getOptions($level_id);
 ?>
 <div id="arc_setting_div">
-	<h3 class="topborder"><?php _e('Auto-Renewal Settings', 'pmproarc');?></h3>
-	<p><?php _e('Change this setting to make-auto renewals optional at checkout.', 'pmproarc');?></p>
+	<h3 class="topborder"><?php _e('Auto-Renewal Settings', 'pmpro-auto-renewal-checkbox');?></h3>
+	<p><?php _e('Change this setting to make-auto renewals optional at checkout.', 'pmpro-auto-renewal-checkbox');?></p>
 	<table>
 	<tbody class="form-table">
 		<tr>
-			<th scope="row" valign="top"><label for="arc_setting"><?php _e('Auto-Renewal Optional?', 'pmproarc');?></label></th>
+			<th scope="row" valign="top"><label for="arc_setting"><?php _e('Auto-Renewal Optional?', 'pmpro-auto-renewal-checkbox');?></label></th>
 			<td>
 				<select id="arc_setting" name="arc_setting">
-					<option value="0" <?php selected($options['setting'], 0);?>><?php _e('No. All checkouts will setup recurring billing.', 'pmproarc');?></option>
-					<option value="1" <?php selected($options['setting'], 1);?>><?php _e('Yes. Default to unchecked.', 'pmproarc');?></option>
-					<option value="2" <?php selected($options['setting'], 2);?>><?php _e('Yes. Default to checked.', 'pmproarc');?></option>
+					<option value="0" <?php selected($options['setting'], 0);?>><?php _e('No. All checkouts will setup recurring billing.', 'pmpro-auto-renewal-checkbox');?></option>
+					<option value="1" <?php selected($options['setting'], 1);?>><?php _e('Yes. Default to unchecked.', 'pmpro-auto-renewal-checkbox');?></option>
+					<option value="2" <?php selected($options['setting'], 2);?>><?php _e('Yes. Default to checked.', 'pmpro-auto-renewal-checkbox');?></option>
 				</select>
 			</td>
 		</tr>
@@ -142,7 +144,7 @@ function pmproarc_pmpro_checkout_boxes() {
 	<div id="pmpro_autorenewal_checkbox" class="pmpro_checkout">
 		<hr />
 		<h3>
-			<span class="pmpro_checkout-h3-name"><?php _e('Would you like to set up automatic renewals?', 'pmproarc');?></span>
+			<span class="pmpro_checkout-h3-name"><?php _e('Would you like to set up automatic renewals?', 'pmpro-auto-renewal-checkbox');?></span>
 		</h3>
 		<div class="pmpro_checkout-fields">
 			<div class="pmpro_checkout-field-checkbox pmpro_checkout_field-autorenew">
@@ -156,7 +158,7 @@ function pmproarc_pmpro_checkout_boxes() {
 						$temp_level = apply_filters('pmpro_checkout_level', $temp_level);
 						add_filter("pmpro_checkout_level", "pmproarc_checkout_level", 7);
 						$temp_level->initial_payment = $temp_level->billing_amount;
-						printf(__('Yes, renew at %s', 'pmproarc'), pmpro_getLevelCost($temp_level, false, true));
+						printf(__('Yes, renew at %s', 'pmpro-auto-renewal-checkbox'), pmpro_getLevelCost($temp_level, false, true));
 					?>
 				</label>
 			</div>  <!-- end pmpro_checkout-field -->
