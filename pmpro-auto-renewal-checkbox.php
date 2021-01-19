@@ -184,6 +184,7 @@ function pmproarc_pmpro_paypalexpress_session_vars() {
 	$_SESSION['autorenew_present'] = 1;
 }
 add_action('pmpro_paypalexpress_session_vars', 'pmproarc_pmpro_paypalexpress_session_vars');
+add_action('pmpro_before_send_to_twocheckout', 'pmprorh_rf_pmpro_paypalexpress_session_vars', 10, 0);
 
 //update level based on selection
 function pmproarc_checkout_level($level) {
