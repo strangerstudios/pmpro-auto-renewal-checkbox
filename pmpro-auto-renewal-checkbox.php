@@ -317,8 +317,13 @@ function pmproarc_pmpro_before_change_membership_level($level_id, $user_id)
 {
 	//are we on the cancel page?
 	global $pmpro_pages, $wpdb, $pmpro_stripe_event, $pmpro_next_payment_timestamp;
-	if($level_id == 0 && (is_page($pmpro_pages['cancel']) || (is_admin() && (empty($_REQUEST['from']) || $_REQUEST['from'] != 'profile'))))
-	{
+	if( $level_id == 0 && (
+    is_page( $pmpro_pages['cancel'] ) ||
+    ( is_admin() &&
+      ( empty($_REQUEST['from']) || $_REQUEST['from'] != 'profile' ) && // Don't give back if editing profile
+      ( ! isset( $_REQUEST['action'] ) && $_REQUEST['action'] != 'delete' ) // Don't give back if user deleted
+    )
+  ) ) {
 		//get last order
 		$order = new MemberOrder();
 		$order->getLastMemberOrder($user_id, "success");
@@ -371,8 +376,15 @@ function pmproarc_pmpro_after_change_membership_level($level_id, $user_id)
 {
 	//are we on the cancel page?
 	global $pmpro_pages, $wpdb, $pmpro_next_payment_timestamp;
-	if($pmpro_next_payment_timestamp !== false && $level_id == 0 && (is_page($pmpro_pages['cancel']) || (is_admin() && (empty($_REQUEST['from']) || $_REQUEST['from'] != 'profile'))))
-	{
+  if(
+    $pmpro_next_payment_timestamp !== false &&
+    $level_id == 0 && (
+      is_page( $pmpro_pages['cancel'] ) ||
+      ( is_admin() &&
+        ( empty($_REQUEST['from']) || $_REQUEST['from'] != 'profile' ) && // Don't give back if editing profile
+        ( ! isset( $_REQUEST['action'] ) && $_REQUEST['action'] != 'delete' ) // Don't give back if user deleted
+        )
+  ) ) {
 		/*
 			okay, let's give the user his old level back with an expiration based on his subscription date
 		*/
