@@ -230,7 +230,11 @@ function pmproarc_checkout_level($level) {
 		//remove recurring billing
 		$level->billing_amount = 0;
 		$level->cycle_number = 0;
-	}
+	} else {
+        // Disable Set Expiration Date
+        remove_filter( 'pmpro_checkout_level', 'pmprosed_pmpro_checkout_level' );
+        remove_filter( 'pmpro_discount_code_level', 'pmprosed_pmpro_checkout_level', 10, 2 );
+    }
 
 	return $level;
 }
