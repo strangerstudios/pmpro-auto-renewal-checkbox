@@ -1,0 +1,68 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: info@paidmembershipspro.com\n"
+"POT-Creation-Date: 2020-02-13 10:24+0200\n"
+"PO-Revision-Date: 2020-02-13 10:34+0200\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.2.4\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: af_ZA\n"
+
+#: pmpro-auto-renewal-checkbox.php:36
+msgid "Auto-Renewal Settings"
+msgstr "Instellings vir outovernuwing"
+
+#: pmpro-auto-renewal-checkbox.php:37
+msgid "Change this setting to make-auto renewals optional at checkout."
+msgstr "Verander hierdie instelling om outomatiese hernuwings by die afhandeling opsioneel te maak."
+
+#: pmpro-auto-renewal-checkbox.php:41
+msgid "Auto-Renewal Optional?"
+msgstr "Outo-hernuwing opsioneel?"
+
+#: pmpro-auto-renewal-checkbox.php:44
+msgid "No. All checkouts will setup recurring billing."
+msgstr "Nee. Al die betalings sal herhalende fakturering opstel."
+
+#: pmpro-auto-renewal-checkbox.php:45
+msgid "Yes. Default to unchecked."
+msgstr "Ja. Standaard as nie gemerk nie."
+
+#: pmpro-auto-renewal-checkbox.php:46
+msgid "Yes. Default to checked."
+msgstr "Ja. Verstek na gemerk."
+
+#: pmpro-auto-renewal-checkbox.php:147
+msgid "Would you like to set up automatic renewals?"
+msgstr "Wil u outomatiese hernuwings instel?"
+
+#: pmpro-auto-renewal-checkbox.php:161
+#, php-format
+msgid "Yes, renew at %s"
+msgstr "Ja, hernu teen %s"
+
+#: pmpro-auto-renewal-checkbox.php:480
+msgid "Docs"
+msgstr "Docs"
+
+#: pmpro-auto-renewal-checkbox.php:480
+msgid "View Documentation"
+msgstr "Kyk na dokumentasie"
+
+#: pmpro-auto-renewal-checkbox.php:481
+msgid "Support"
+msgstr "Support"
+
+#: pmpro-auto-renewal-checkbox.php:481
+msgid "Visit Customer Support Forum"
+msgstr "Besoek kliëntediensforum"
