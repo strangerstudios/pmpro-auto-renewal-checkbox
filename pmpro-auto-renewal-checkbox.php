@@ -210,7 +210,7 @@ function pmproarc_checkout_level($level) {
 		return $level;
 
 	//not if using a discount code
-	if(!empty($discount_code))
+	if ( ! empty( $discount_code ) || ! empty( $_REQUEST['discount_code'] ) )
 		return $level;
 
 	if(isset($_REQUEST['autorenew_present']) && empty($_REQUEST['autorenew']))
