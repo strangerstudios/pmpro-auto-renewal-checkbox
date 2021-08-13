@@ -253,7 +253,7 @@ add_filter( 'pmpro_email_body', 'pmproarc_conpd_pmpro_email_body', 10, 2 );
  */
 function pmproarc_conpd_pmpro_email_data( $data, $email ) {
 	if ( function_exists( 'pmproconpd_pmpro_email_data' ) ) {
-		return;
+		return $data;
 	}
 	global $pmpro_next_payment_timestamp;
 
