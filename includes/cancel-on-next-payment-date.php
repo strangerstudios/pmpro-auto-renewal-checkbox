@@ -198,7 +198,7 @@ function pmproarc_conpd_gettext_cancel_text( $translated_text, $text, $domain ) 
  */
 function pmproarc_conpd_pmpro_email_body( $body, $email ) {
 	if ( function_exists( 'pmproconpd_pmpro_email_body' ) ) {
-		return;
+		return $body;
 	}
 	global $pmpro_next_payment_timestamp;
 
