@@ -15,6 +15,8 @@
  * @param int   $cancel_level     The level being cancelled (if applicable).
  *
  * @global int $pmpro_next_payment_timestamp The UNIX epoch value for the next payment.
+ *
+ * @return int The ID of the membership level we're changing to for the user.
  */
 function pmproarc_conpd_pmpro_change_level( $level, $user_id, $old_level_status, $cancel_level ) {
 	if ( function_exists( 'pmproconpd_pmpro_change_level' ) ) {
