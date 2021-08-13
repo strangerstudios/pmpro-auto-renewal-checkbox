@@ -18,7 +18,7 @@
  */
 function pmproarc_conpd_pmpro_change_level( $level, $user_id, $old_level_status, $cancel_level ) {
 	if ( function_exists( 'pmproconpd_pmpro_change_level' ) ) {
-		return;
+		return $level;
 	}
 	global $pmpro_pages, $wpdb, $pmpro_next_payment_timestamp;
 
