@@ -3,7 +3,7 @@
 // https://github.com/strangerstudios/pmpro-cancel-on-next-payment-date/
 
 // Also changed prefixes from pmproconpd_ to pmproarc_conpd_ and added compatibility
-// code to each function to avoid issuses 
+// code to each function to avoid issues.
 
 /**
  * If the user has a payment coming up, don't cancel.
