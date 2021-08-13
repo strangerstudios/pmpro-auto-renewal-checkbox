@@ -169,7 +169,7 @@ add_filter( 'pmpro_change_level', 'pmproarc_conpd_pmpro_change_level', 10, 4 );
  */
 function pmproarc_conpd_gettext_cancel_text( $translated_text, $text, $domain ) {
 	if ( function_exists( 'pmproconpd_gettext_cancel_text' ) ) {
-		return;
+		return $translated_text;
 	}
 	global $pmpro_next_payment_timestamp;
 
