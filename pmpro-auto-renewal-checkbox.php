@@ -15,6 +15,12 @@ Domain Path: /languages
 */
 define("PMPRO_AUTO_RENEWAL_CHECKBOX_DIR", dirname(__FILE__));
 
+/**
+ * Load the functionality from PMPro Cancel on Next Payment Date Add On.
+ * This file should be removed once CONPD is merged into core.
+ */
+require_once( PMPRO_AUTO_RENEWAL_CHECKBOX_DIR . '/includes/cancel-on-next-payment-date.php' );
+
 /*
 	Load plugin textdomain.
 */
@@ -492,7 +498,7 @@ function pmproarc_pmpro_email_body($body, $email)
 add_filter("pmpro_email_body", "pmproarc_pmpro_email_body", 10, 2);
 
 /*
-Function to add links to the plugin row meta
+ Function to add links to the plugin row meta
 */
 function pmproarc_plugin_row_meta($links, $file) {
 	if(strpos($file, 'pmpro-auto-renewal-checkbox') !== false) {
