@@ -1,9 +1,23 @@
 <?php
-// Copied from PMPro Cancel on Next Payment Date Add On:
-// https://github.com/strangerstudios/pmpro-cancel-on-next-payment-date/
+/*
+ Plugin Name: Paid Memberships Pro - Cancel on Next Payment Date
+ Plugin URI: https://www.paidmembershipspro.com/add-ons/cancel-on-next-payment-date
+ Description: Change membership cancellation to set expiration date for next payment instead of cancelling immediately.
+ Version: 0.4
+ Author: Paid Memberships Pro
+ Author URI: https://www.paidmembershipspro.com
+ Text Domain: pmpro-cancel-on-next-payment-date
+ Domain Path: /languages
+*/
 
-// Also changed prefixes from pmproconpd_ to pmproarc_conpd_ and added compatibility
-// code to each function to avoid issues.
+/**
+ * Load plugin textdomain.
+ */
+function pmproconpd_load_text_domain() {
+	load_plugin_textdomain( 'pmpro-cancel-on-next-payment-date', false, plugin_basename( __DIR__ ) . '/languages' );
+}
+
+add_action( 'plugins_loaded', 'pmproconpd_load_text_domain' );
 
 /**
  * If the user has a payment coming up, don't cancel.
@@ -15,13 +29,8 @@
  * @param int   $cancel_level     The level being cancelled (if applicable).
  *
  * @global int $pmpro_next_payment_timestamp The UNIX epoch value for the next payment.
- *
- * @return int The ID of the membership level we're changing to for the user.
  */
-function pmproarc_conpd_pmpro_change_level( $level, $user_id, $old_level_status, $cancel_level ) {
-	if ( function_exists( 'pmproconpd_pmpro_change_level' ) ) {
-		return $level;
-	}
+function pmproconpd_pmpro_change_level( $level, $user_id, $old_level_status, $cancel_level ) {
 	global $pmpro_pages, $wpdb, $pmpro_next_payment_timestamp;
 
 	// Bypass if not level 0.
@@ -76,7 +85,11 @@ function pmproarc_conpd_pmpro_change_level( $level, $user_id, $old_level_status,
 		$pmpro_next_payment_timestamp = PMProGateway_stripe::pmpro_next_payment( '', $user_id, 'success' );
 	} elseif ( ! empty( $order ) && 'paypalexpress' === $order->gateway ) {
 		// Check the transaction type.
-		if ( ! empty( $_POST['txn_type'] ) && 'recurring_payment_failed' === $_POST['txn_type'] ) {
+		if ( ! empty( $_POST['txn_type'] ) && in_array( $_POST['txn_type'], [
+				'recurring_payment_failed',
+				'recurring_payment_skipped',
+				'recurring_payment_suspended_due_to_max_failed_payment'
+			] ) ) {
 			// Payment failed, so we're past due. No extension.
 			$pmpro_next_payment_timestamp = false;
 		} else {
@@ -148,7 +161,7 @@ function pmproarc_conpd_pmpro_change_level( $level, $user_id, $old_level_status,
 
 	if ( $is_on_cancel_page ) {
 		// Change the message shown on Cancel page.
-		add_filter( 'gettext', 'pmproarc_conpd_gettext_cancel_text', 10, 3 );
+		add_filter( 'gettext', 'pmproconpd_gettext_cancel_text', 10, 3 );
 	} else {
 		// Unset global in case other members expire, e.g. during expiration cron.
 		unset( $pmpro_next_payment_timestamp );
@@ -156,7 +169,7 @@ function pmproarc_conpd_pmpro_change_level( $level, $user_id, $old_level_status,
 
 	return $level;
 }
-add_filter( 'pmpro_change_level', 'pmproarc_conpd_pmpro_change_level', 10, 4 );
+add_filter( 'pmpro_change_level', 'pmproconpd_pmpro_change_level', 10, 4 );
 
 /**
  * Replace the cancellation text so people know they'll still have access for a certain amount of time.
@@ -167,10 +180,7 @@ add_filter( 'pmpro_change_level', 'pmproarc_conpd_pmpro_change_level', 10, 4 );
  *
  * @return string The updated translated text.
  */
-function pmproarc_conpd_gettext_cancel_text( $translated_text, $text, $domain ) {
-	if ( function_exists( 'pmproconpd_gettext_cancel_text' ) ) {
-		return $translated_text;
-	}
+function pmproconpd_gettext_cancel_text( $translated_text, $text, $domain ) {
 	global $pmpro_next_payment_timestamp;
 
 	// Double check that we have reinstated their membership through this Add On.
@@ -196,10 +206,7 @@ function pmproarc_conpd_gettext_cancel_text( $translated_text, $text, $domain ) 
  *
  * @return string The updated email body content.
  */
-function pmproarc_conpd_pmpro_email_body( $body, $email ) {
-	if ( function_exists( 'pmproconpd_pmpro_email_body' ) ) {
-		return $body;
-	}
+function pmproconpd_pmpro_email_body( $body, $email ) {
 	global $pmpro_next_payment_timestamp;
 
 	/**
@@ -241,7 +248,7 @@ function pmproarc_conpd_pmpro_email_body( $body, $email ) {
 	return $body;
 }
 
-add_filter( 'pmpro_email_body', 'pmproarc_conpd_pmpro_email_body', 10, 2 );
+add_filter( 'pmpro_email_body', 'pmproconpd_pmpro_email_body', 10, 2 );
 
 /**
  * Update the email data to set start and end date variables.
@@ -251,10 +258,7 @@ add_filter( 'pmpro_email_body', 'pmproarc_conpd_pmpro_email_body', 10, 2 );
  *
  * @return array The updated email template variable data.
  */
-function pmproarc_conpd_pmpro_email_data( $data, $email ) {
-	if ( function_exists( 'pmproconpd_pmpro_email_data' ) ) {
-		return $data;
-	}
+function pmproconpd_pmpro_email_data( $data, $email ) {
 	global $pmpro_next_payment_timestamp;
 
 	// Double check that we have reinstated their membership through this Add On.
@@ -289,4 +293,4 @@ function pmproarc_conpd_pmpro_email_data( $data, $email ) {
 
 	return $data;
 }
-add_filter( 'pmpro_email_data', 'pmproarc_conpd_pmpro_email_data', 10, 2 );
+add_filter( 'pmpro_email_data', 'pmproconpd_pmpro_email_data', 10, 2 );
