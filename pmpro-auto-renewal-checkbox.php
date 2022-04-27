@@ -30,6 +30,15 @@ add_action( 'init', 'pmproarc_load_textdomain' );
  * This file should be removed once CONPD is merged into core.
  */
 function pmproarc_load_cancel_on_next_payment_date() {
+	global $pagenow;
+
+	// Make sure that we are not on the admin plugins.php page.
+	// If we are, we don't want to load our version of CONPD
+	// in case the real plugin is being activated.
+	if ( is_admin() && $pagenow === 'plugins.php' ) {
+		return;
+	}
+
 	if ( ! function_exists( 'pmproconpd_pmpro_change_level' ) ) {
 		require_once( PMPRO_AUTO_RENEWAL_CHECKBOX_DIR . '/includes/cancel-on-next-payment-date.php' );
 	}
