@@ -11,15 +11,6 @@
 */
 
 /**
- * Load plugin textdomain.
- */
-function pmproconpd_load_text_domain() {
-	load_plugin_textdomain( 'pmpro-cancel-on-next-payment-date', false, plugin_basename( __DIR__ ) . '/languages' );
-}
-
-add_action( 'plugins_loaded', 'pmproconpd_load_text_domain' );
-
-/**
  * If the user has a payment coming up, don't cancel.
  * Instead update their expiration date and keep their level.
  *
