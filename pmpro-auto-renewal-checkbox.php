@@ -39,7 +39,7 @@ function pmproarc_pmpro_membership_level_after_other_settings() {
 	$options = pmproarc_getOptions($level_id);
 ?>
 <div id="arc_setting_div">
-	<h2 class="topborder"><?php esc_html_e('Auto-Renewal Settings', 'pmpro-auto-renewal-checkbox');?></h2>
+	<h3 class="topborder"><?php esc_html_e('Auto-Renewal Settings', 'pmpro-auto-renewal-checkbox');?></h3>
 	<p><?php esc_html_e('Change this setting to make-auto renewals optional at checkout.', 'pmpro-auto-renewal-checkbox');?></p>
 	<table>
 	<tbody class="form-table">
