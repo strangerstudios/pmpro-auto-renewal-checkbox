@@ -1,97 +1,84 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#, fuzzy
+# Copyright (C) 2023 Paid Memberships Pro
+# This file is distributed under the same license as the Paid Memberships Pro - Auto-Renewal Checkbox plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: Paid Memberships Pro - Auto-Renewal Checkbox 0.3.1\n"
 "Report-Msgid-Bugs-To: info@paidmembershipspro.com\n"
-"POT-Creation-Date: 2021-07-26 15:10+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Last-Translator: Paid Memberships Pro <info@paidmembershipspro.com>\n"
+"Language-Team: Paid Memberships Pro <info@paidmembershipspro.com>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
-"X-Generator: Loco https://localise.biz/"
+"POT-Creation-Date: 2023-10-12T15:07:33+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.8.1\n"
+"X-Domain: pmpro-auto-renewal-checkbox\n"
 
-#: pmpro-auto-renewal-checkbox.php:41
-msgid "Auto-Renewal Optional?"
+#. Plugin Name of the plugin
+msgid "Paid Memberships Pro - Auto-Renewal Checkbox"
 msgstr ""
 
-#: pmpro-auto-renewal-checkbox.php:36
-msgid "Auto-Renewal Settings"
-msgstr ""
-
-#: pmpro-auto-renewal-checkbox.php:37
-msgid "Change this setting to make-auto renewals optional at checkout."
-msgstr ""
-
-#: pmpro-auto-renewal-checkbox.php:500
-msgid "Docs"
-msgstr ""
-
-#. Author URI of the plugin
-msgid "https://www.paidmembershipspro.com"
-msgstr ""
-
-#. URI of the plugin
-msgid ""
-"https://www.paidmembershipspro.com/add-ons/auto-renewal-checkbox-membership-"
-"checkout/"
+#. Plugin URI of the plugin
+msgid "https://www.paidmembershipspro.com/add-ons/auto-renewal-checkbox-membership-checkout/"
 msgstr ""
 
 #. Description of the plugin
 msgid "Make auto-renewal optional at checkout with a checkbox."
 msgstr ""
 
-#: pmpro-auto-renewal-checkbox.php:44
-msgid "No. All checkouts will setup recurring billing."
-msgstr ""
-
 #. Author of the plugin
 msgid "Paid Memberships Pro"
 msgstr ""
 
-#. Name of the plugin
-msgid "Paid Memberships Pro - Auto-Renewal Checkbox"
+#. Author URI of the plugin
+msgid "https://www.paidmembershipspro.com"
 msgstr ""
 
-#: pmpro-auto-renewal-checkbox.php:501
-msgid "Support"
+#: pmpro-auto-renewal-checkbox.php:66
+msgid "Auto-Renewal Settings"
 msgstr ""
 
-#: pmpro-auto-renewal-checkbox.php:500
-msgid "View Documentation"
+#: pmpro-auto-renewal-checkbox.php:67
+msgid "Change this setting to make-auto renewals optional at checkout."
 msgstr ""
 
-#: pmpro-auto-renewal-checkbox.php:501
-msgid "Visit Customer Support Forum"
+#: pmpro-auto-renewal-checkbox.php:71
+msgid "Auto-Renewal Optional?"
 msgstr ""
 
-#: pmpro-auto-renewal-checkbox.php:147
-msgid "Would you like to set up automatic renewals?"
+#: pmpro-auto-renewal-checkbox.php:74
+msgid "No. All checkouts will setup recurring billing."
 msgstr ""
 
-#. Level Cost
-#: pmpro-auto-renewal-checkbox.php:163
-#, php-format
-msgid "Yes, renew at %s"
-msgstr ""
-
-#: pmpro-auto-renewal-checkbox.php:46
-msgid "Yes. Default to checked."
-msgstr ""
-
-#: pmpro-auto-renewal-checkbox.php:45
+#: pmpro-auto-renewal-checkbox.php:75
 msgid "Yes. Default to unchecked."
 msgstr ""
 
-#: pmpro-auto-renewal-checkbox.php:464
-msgid ""
-"Your recurring subscription has been canceled. Your active membership will "
-"expire on "
+#: pmpro-auto-renewal-checkbox.php:76
+msgid "Yes. Default to checked."
+msgstr ""
+
+#: pmpro-auto-renewal-checkbox.php:177
+msgid "Would you like to set up automatic renewals?"
+msgstr ""
+
+#. translators: Level Cost
+#: pmpro-auto-renewal-checkbox.php:193
+msgid "Yes, renew at %s"
+msgstr ""
+
+#: pmpro-auto-renewal-checkbox.php:353
+msgid "View Documentation"
+msgstr ""
+
+#: pmpro-auto-renewal-checkbox.php:353
+msgid "Docs"
+msgstr ""
+
+#: pmpro-auto-renewal-checkbox.php:354
+msgid "Visit Customer Support Forum"
+msgstr ""
+
+#: pmpro-auto-renewal-checkbox.php:354
+msgid "Support"
 msgstr ""
