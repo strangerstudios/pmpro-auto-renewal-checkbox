@@ -149,9 +149,9 @@ function pmproarc_pmpro_checkout_boxes() {
 	?>
 	<div id="pmpro_autorenewal_checkbox" class="pmpro_checkout">
 		<hr />
-		<h3>
-			<span class="pmpro_checkout-h3-name"><?php esc_html_e('Would you like to set up automatic renewals?', 'pmpro-auto-renewal-checkbox');?></span>
-		</h3>
+		<h2>
+			<span class="pmpro_checkout-h2-name"><?php esc_html_e('Would you like to set up automatic renewals?', 'pmpro-auto-renewal-checkbox');?></span>
+		</h2>
 		<div class="pmpro_checkout-fields">
 			<div class="pmpro_checkout-field-checkbox pmpro_checkout_field-autorenew">
 				<input type="checkbox" id="autorenew" name="autorenew" value="1" <?php checked($autorenew, 1);?> />
