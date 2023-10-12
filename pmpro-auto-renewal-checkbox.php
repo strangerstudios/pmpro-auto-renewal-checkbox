@@ -29,6 +29,15 @@ function pmproarc_load_textdomain() {
 }
 add_action( 'init', 'pmproarc_load_textdomain' );
 
+/**
+  * Mark the plugin as MMPU-incompatible.
+  */
+ function pmproarc_mmpu_incompatible_add_ons( $incompatible ) {
+     $incompatible[] = 'PMPro Auto-Renewal Checkbox Add On';
+     return $incompatible;
+ }
+ add_filter( 'pmpro_mmpu_incompatible_add_ons', 'pmproarc_mmpu_incompatible_add_ons' );
+
 
 /*
 	Add settings to the edit levels page
