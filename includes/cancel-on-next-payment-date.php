@@ -1,6 +1,6 @@
 <?php
 /*
- * Copy of Paid Memberships Pro - Cancel on Next Payment Date Add On v0.4.
+ * Copy of Paid Memberships Pro - Cancel on Next Payment Date Add On v0.5.1.
  * File only loaded if PMPro CONOPD is not active.
  *
  * This file can be removed if PMPro CONPD is merged into core.
@@ -12,15 +12,15 @@
  * If the user has a payment coming up, don't cancel.
  * Instead update their expiration date and keep their level.
  *
- * @param int   $level            The ID of the membership level we're changing to for the user.
- * @param int   $user_id          The User ID we're changing membership information for.
- * @param array $old_level_status The status for the old level's change (if applicable).
- * @param int   $cancel_level     The level being cancelled (if applicable).
+ * @param int    $level            The ID of the membership level we're changing to for the user.
+ * @param int    $user_id          The User ID we're changing membership information for.
+ * @param string $old_level_status The status for the old level's change (if applicable).
+ * @param int    $cancel_level     The level being cancelled (if applicable).
  *
  * @global int $pmpro_next_payment_timestamp The UNIX epoch value for the next payment.
  */
 function pmproconpd_pmpro_change_level( $level, $user_id, $old_level_status, $cancel_level ) {
-	global $pmpro_pages, $wpdb, $pmpro_next_payment_timestamp;
+	global $pmpro_pages, $wpdb, $pmpro_next_payment_timestamp, $pmpro_stripe_event;
 
 	// Bypass if not level 0.
 	if ( 0 !== (int) $level ) {
@@ -32,12 +32,18 @@ function pmproconpd_pmpro_change_level( $level, $user_id, $old_level_status, $ca
 		return $level;
 	}
 
+	// Bypass if we dont know which level is getting cancelled
+	if ( ! $cancel_level ) {
+		return $level;
+	}
+
 	$is_on_cancel_page = is_page( $pmpro_pages['cancel'] );
-	$is_on_profile_page = is_admin() && ( ! empty( $_REQUEST['from'] && 'profile' === $_REQUEST['from'] ) );
+	$is_on_profile_page = is_admin() && ( ! empty( $_REQUEST['from'] ) && 'profile' === $_REQUEST['from'] );
 
 	// Bypass if not on cancellation page or a non-profile admin page.
 	// Webhook IPN calls that go through admin-ajax are non-profile admin pages.
-	if ( ! $is_on_cancel_page && ( ! is_admin() || $is_on_profile_page ) ) {
+	// Webhook IPN calls which are not going through admin-ajax can be detected with pmpro_doing_webhook()
+	if ( ! $is_on_cancel_page && ( ! is_admin() || $is_on_profile_page ) && ! pmpro_doing_webhook() ) {
 		return $level;
 	}
 
@@ -70,13 +76,27 @@ function pmproconpd_pmpro_change_level( $level, $user_id, $old_level_status, $ca
 	if ( empty( $check_level ) || ( ! empty( $check_level->enddate ) && '0000-00-00 00:00:00' !== $check_level->enddate ) ) {
 		// Level already has an end date. Set to false so we really cancel.
 		$pmpro_next_payment_timestamp = false;
-	} elseif ( ! empty( $order ) && 'stripe' === $order->gateway ) {
-		$pmpro_next_payment_timestamp = PMProGateway_stripe::pmpro_next_payment( '', $user_id, 'success' );
+	} elseif ( ! empty( $order ) && 'paypalstandard' === $order->gateway ) {
+		if ( ! empty( $_POST['txn_type'] ) && 'subscr_failed' === $_POST['txn_type'] ) {
+			// Payment failed, so we're past due. No extension.
+			$pmpro_next_payment_timestamp = false;
+		} else {
+			// Use the built in PMPro function to guess next payment date.
+			$pmpro_next_payment_timestamp = pmpro_next_payment( $user_id );
+		}
+	} elseif ( ! empty( $order ) && 'stripe' === $order->gateway ) {		
+		if ( ! empty( $pmpro_stripe_event ) && 'charge.failed' === $pmpro_stripe_event->type ) {
+			// Payment failed, so we're past due. No extension.
+			$pmpro_next_payment_timestamp = false;
+		} else {
+			$pmpro_next_payment_timestamp = PMProGateway_stripe::pmpro_next_payment( '', $user_id, 'success' );
+		}
 	} elseif ( ! empty( $order ) && 'paypalexpress' === $order->gateway ) {
 		// Check the transaction type.
 		if ( ! empty( $_POST['txn_type'] ) && in_array( $_POST['txn_type'], [
 				'recurring_payment_failed',
 				'recurring_payment_skipped',
+				'recurring_payment_suspended',
 				'recurring_payment_suspended_due_to_max_failed_payment'
 			] ) ) {
 			// Payment failed, so we're past due. No extension.
@@ -126,7 +146,7 @@ function pmproconpd_pmpro_change_level( $level, $user_id, $old_level_status, $ca
 	}
 
 	// Update the expiration date.
-	$expiration_date = date( 'Y-m-d H:i:s', $pmpro_next_payment_timestamp );
+	$expiration_date = date( 'Y-m-d H:i:s', intval( $pmpro_next_payment_timestamp ) );
 
 	$wpdb->update(
 		$wpdb->pmpro_memberships_users,
@@ -178,10 +198,8 @@ function pmproconpd_gettext_cancel_text( $translated_text, $text, $domain ) {
 	}
 
 	if ( ( 'pmpro' === $domain || 'paid-memberships-pro' === $domain ) && 'Your membership has been cancelled.' === $text ) {
-		global $current_user;
-
 		// translators: %s: The date the subscription will expire on.
-		$translated_text = sprintf( __( 'Your recurring subscription has been cancelled. Your active membership will expire on %s.', 'pmpro-cancel-on-next-payment-date' ), date( get_option( 'date_format' ), $pmpro_next_payment_timestamp ) );
+		$translated_text = sprintf( __( 'Your recurring subscription has been cancelled. Your active membership will expire on %s.', 'pmpro-cancel-on-next-payment-date' ), date_i18n( get_option( 'date_format' ), intval( $pmpro_next_payment_timestamp ) ) );
 	}
 
 	return $translated_text;
@@ -191,7 +209,7 @@ function pmproconpd_gettext_cancel_text( $translated_text, $text, $domain ) {
  * Update the cancellation email text so people know they'll still have access for a certain amount of time.
  *
  * @param string $body  The email body content.
- * @param string $email The email address this email will be sent to.
+ * @param PMProEmail $email The email template class.
  *
  * @return string The updated email body content.
  */
@@ -229,7 +247,7 @@ function pmproconpd_pmpro_email_body( $body, $email ) {
 		return $body;
 	}
 
-	$expiry_date = date_i18n( get_option( 'date_format' ), $pmpro_next_payment_timestamp );
+	$expiry_date = date_i18n( get_option( 'date_format' ), intval( $pmpro_next_payment_timestamp ) );
 
 	// translators: %s: The date that access will expire on.
 	$body .= '<p>' . sprintf( __( 'Your access will expire on %s.', 'pmpro-cancel-on-next-payment-date' ), $expiry_date ) . '</p>';
@@ -275,10 +293,10 @@ function pmproconpd_pmpro_email_data( $data, $email ) {
 
 	// Set the !!startdate!! variable.
 	$membership_level = pmpro_getMembershipLevelForUser($user_id, true);
-	$data['startdate'] = date_i18n( get_option( 'date_format' ), $membership_level->startdate );
+	$data['startdate'] = date_i18n( get_option( 'date_format' ), intval( $membership_level->startdate ) );
 
 	// Set the !!enddate!! variable.
-	$data['enddate'] = date_i18n( get_option( 'date_format' ), $pmpro_next_payment_timestamp );
+	$data['enddate'] = date_i18n( get_option( 'date_format' ), intval( $pmpro_next_payment_timestamp ) );
 
 	return $data;
 }
