@@ -25,9 +25,9 @@ add_action( 'init', 'pmproarc_load_textdomain' );
 
 /**
  * Load Cancel On Next Payment Date functionality if
- * PMPro CONPD is not installed.
+ * PMPro CONPD is not installed and using a PMPro version below 3.0.
  *
- * This file should be removed once CONPD is merged into core.
+ * This file should be removed soon after CONPD is merged into core.
  */
 function pmproarc_load_cancel_on_next_payment_date() {
 	global $pagenow;
@@ -39,20 +39,11 @@ function pmproarc_load_cancel_on_next_payment_date() {
 		return;
 	}
 
-	if ( ! function_exists( 'pmproconpd_pmpro_change_level' ) ) {
+	if ( ! function_exists( 'pmproconpd_pmpro_change_level' ) && ! class_exists( 'PMPro_Subscription' ) ) {
 		require_once( PMPRO_AUTO_RENEWAL_CHECKBOX_DIR . '/includes/cancel-on-next-payment-date.php' );
 	}
 }
 add_action( 'init', 'pmproarc_load_cancel_on_next_payment_date' );
-
-/*
- * Mark the plugin as MMPU-incompatible.
- */
-function pmproarc_mmpu_incompatible_add_ons( $incompatible ) {
-    $incompatible[] = 'PMPro Auto-Renewal Checkbox Add On';
-    return $incompatible;
-}
-add_filter( 'pmpro_mmpu_incompatible_add_ons', 'pmproarc_mmpu_incompatible_add_ons' );
 
 /*
 	Add settings to the edit levels page
@@ -285,34 +276,67 @@ add_filter("pmpro_checkout_level", "pmproarc_checkout_level", 7);
 	We filter this a little early so other custom code (e.g. prorating code) will override this.
 */
 function pmproarc_profile_start_date_delay_subscription($startdate, $order) {
-	//is this level recurring? does the user already have this level?
-	if(!empty($order->membership_level) && pmpro_isLevelRecurring($order->membership_level) && pmpro_hasMembershipLevel($order->membership_level->id)) {
-		//check for current expiration
-		$current_level = pmpro_getMembershipLevelForUser();
-		if(!empty($current_level) && pmpro_isLevelExpiring($current_level)) {
-			$startdate = date('Y-m-d', strtotime($startdate, current_time('timestamp')) + $current_level->enddate + (3600*24) - current_time('timestamp')) . 'T0:0:0';
-		}
+	// If the level is not recurring, bail.
+	if ( empty( $order->membership_level ) || ! pmpro_isLevelRecurring( $order->membership_level ) ) {
+		return $startdate;
 	}
+
+	// If the user has this level, get it.
+	$current_level = pmpro_getSpecificMembershipLevelForUser( $order->user_id, $order->membership_level->id );
+
+	// If this user does not have this level, bail.
+	if ( empty( $current_level ) ) {
+		return $startdate;
+	}
+
+	// If the user's level is not expiring, bail.
+	if ( ! pmpro_isLevelExpiring( $current_level ) || empty( $current_level->enddate ) ) {
+		return $startdate;
+	}
+
+	// Calculate the number of seconds until expiration.
+	$seconds_until_expiration = $current_level->enddate - current_time( 'timestamp' );
+	$seconds_until_expiration = max( 0, $seconds_until_expiration );
+
+	// Calculate the date of the next payment.
+	$startdate = date( 'Y-m-d H:i:s', strtotime( $startdate, current_time( 'timestamp' ) ) + $seconds_until_expiration );
     
 	return $startdate;
 }
-add_filter('pmpro_profile_start_date', 'pmproarc_profile_start_date_delay_subscription', 9, 2);
+add_filter( 'pmpro_profile_start_date', 'pmproarc_profile_start_date_delay_subscription', 9, 2 );
 
 /*
 	If checking out without recurring with an active recurring subscription for the same level,
 	extend from the next payment date instead of the date of checkout.
 */
-function pmproarc_checkout_level_extend_memberships($level)
-{
+function pmproarc_checkout_level_extend_memberships( $level ) {
 	//does this level expire? are they an existing user of this level?
-	if(!empty($level) && !empty($level->expiration_number) && pmpro_hasMembershipLevel($level->id))
-	{
-		//we want to make sure that we use APIs to get next payment date when available
-		add_filter('pmpro_next_payment', array('PMProGateway_stripe', 'pmpro_next_payment'), 10, 3);
-		add_filter('pmpro_next_payment', array('PMProGateway_paypalexpress', 'pmpro_next_payment'), 10, 3);
+	if ( ! empty( $level ) && ! empty( $level->expiration_number ) && pmpro_hasMembershipLevel( $level->id ) ) {
+		if ( class_exists( 'PMPro_Subscription' ) ) {
+			// Check if the user has a subscription for this level.
+			$subscriptions = PMPro_Subscription::get_subscriptions_for_user( get_current_user_id(), $level->id );
 
-		//recurring memberships will have a next payment date
-		$next_payment_date = pmpro_next_payment();
+			// If the user has no subscriptions, we don't need to alter the level.
+			if ( empty( $subscriptions ) ) {
+				return $level;
+			}
+
+			// Get the next payment date for the user's subscription.
+			$next_payment_date = reset( $subscriptions )->get_next_payment_date();
+		} else {
+			// Backwards compatibility for PMPro 2.x.
+			//we want to make sure that we use APIs to get next payment date when available
+			add_filter('pmpro_next_payment', array('PMProGateway_stripe', 'pmpro_next_payment'), 10, 3);
+			add_filter('pmpro_next_payment', array('PMProGateway_paypalexpress', 'pmpro_next_payment'), 10, 3);
+
+			//recurring memberships will have a next payment date
+			$next_payment_date = pmpro_next_payment();
+
+			// If the next payment date is not set, we don't need to alter the level.
+			if ( empty( $next_payment_date ) ) {
+				return $level;
+			}
+		}
 
 		//calculate days left
 		$todays_date = current_time('timestamp');
