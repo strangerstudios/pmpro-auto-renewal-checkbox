@@ -55,14 +55,14 @@ function pmproarc_pmpro_membership_level_after_other_settings() {
 ?>
 <div id="arc_setting_div">
 	<h3 class="topborder"><?php esc_html_e('Auto-Renewal Settings', 'pmpro-auto-renewal-checkbox');?></h3>
-	<p><?php esc_html_e('Change this setting to make-auto renewals optional at checkout.', 'pmpro-auto-renewal-checkbox');?></p>
+	<p><?php esc_html_e( 'Change this setting to make auto-renewals optional at checkout.', 'pmpro-auto-renewal-checkbox' );?></p>
 	<table>
 	<tbody class="form-table">
 		<tr>
 			<th scope="row" valign="top"><label for="arc_setting"><?php esc_html_e('Auto-Renewal Optional?', 'pmpro-auto-renewal-checkbox');?></label></th>
 			<td>
 				<select id="arc_setting" name="arc_setting">
-					<option value="0" <?php selected($options['setting'], 0);?>><?php esc_html_e('No. All checkouts will setup recurring billing.', 'pmpro-auto-renewal-checkbox');?></option>
+					<option value="0" <?php selected($options['setting'], 0);?>><?php esc_html_e('No. All checkouts will set up recurring billing.', 'pmpro-auto-renewal-checkbox');?></option>
 					<option value="1" <?php selected($options['setting'], 1);?>><?php esc_html_e('Yes. Default to unchecked.', 'pmpro-auto-renewal-checkbox');?></option>
 					<option value="2" <?php selected($options['setting'], 2);?>><?php esc_html_e('Yes. Default to checked.', 'pmpro-auto-renewal-checkbox');?></option>
 				</select>
