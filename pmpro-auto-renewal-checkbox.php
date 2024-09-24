@@ -162,7 +162,7 @@ function pmproarc_pmpro_checkout_boxes() {
 
 	if(!$pmpro_review) {
 		?>
-		<fieldset id="pmpro_autorenewal_checkbox" class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_form_fieldset', 'pmpro_payment_method' ) ); ?>">
+		<fieldset id="pmpro_autorenewal_checkbox" class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_form_fieldset', 'pmpro_autorenewal_checkbox' ) ); ?>">
 			<div class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_card' ) ); ?>">
 				<div class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_card_content' ) ); ?>">
 					<legend class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_form_legend' ) ); ?>">
@@ -172,9 +172,9 @@ function pmproarc_pmpro_checkout_boxes() {
 					</legend>
 					<div class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_form_fields' ) ); ?>">
 						<div class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_form_field pmpro_form_field-checkbox' ) ); ?>">
-							<input type="checkbox" id="autorenew" name="autorenew" class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_input_field pmpro_input_field-checkbox' ) ); ?>" value="1" <?php checked( $autorenew, 1 );?> />
-							<input type="hidden" id="autorenew_present" name="autorenew_present" value="1" />
-							<label class="pmprorh_checkbox_label pmpro_clickable" for="autorenew">
+							<label for="autorenew" class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_form_label pmpro_form_label-inline pmpro_clickable' ) ); ?>">
+								<input type="checkbox" id="autorenew" name="autorenew" class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_form_input pmpro_form_input-checkbox' ) ); ?>" value="1" <?php checked( $autorenew, 1 ); ?> />
+								<input type="hidden" id="autorenew_present" name="autorenew_present" value="1" />
 								<?php
 									//setup a temp level with initial = billing amount so the short level cost text looks nice
 									$temp_level = pmpro_getLevel($pmpro_level->id);
@@ -187,7 +187,7 @@ function pmproarc_pmpro_checkout_boxes() {
 									printf(__('Yes, renew at %s', 'pmpro-auto-renewal-checkbox'), pmpro_getLevelCost($temp_level, false, true));
 								?>
 							</label>
-						</div>  <!-- end pmpro_form_field pmpro_form_field-checkbox -->
+						</div> <!-- end pmpro_form_field -->
 					</div> <!-- end pmpro_form_fields -->
 				</div> <!-- end pmpro_card_content -->
 			</div> <!-- end pmpro_card -->
