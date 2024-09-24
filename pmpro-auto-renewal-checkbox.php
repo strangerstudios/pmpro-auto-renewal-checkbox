@@ -1,14 +1,15 @@
 <?php
-/*
-Plugin Name: Paid Memberships Pro - Auto-Renewal Checkbox
-Plugin URI: https://www.paidmembershipspro.com/add-ons/auto-renewal-checkbox-membership-checkout/
-Description: Make auto-renewal optional at checkout with a checkbox.
-Version: 0.3.2
-Author: Paid Memberships Pro
-Author URI: https://www.paidmembershipspro.com
-Text Domain: pmpro-auto-renewal-checkbox
-Domain Path: /languages
-*/
+/**
+ * Plugin Name: Paid Memberships Pro - Auto-Renewal Checkbox
+ * Plugin URI: https://www.paidmembershipspro.com/add-ons/auto-renewal-checkbox-membership-checkout/
+ * Description: Make auto-renewal optional at checkout with a checkbox.
+ * Version: 0.3.3
+ * Author: Paid Memberships Pro
+ * Author URI: https://www.paidmembershipspro.com
+ * Text Domain: pmpro-auto-renewal-checkbox
+ * Domain Path: /languages
+ * License: GPL-3.0
+ */
 
 /*
 	Settings, Globals and Constants
