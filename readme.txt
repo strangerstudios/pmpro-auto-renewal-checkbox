@@ -1,9 +1,11 @@
-=== Paid Memberships Pro: Auto-Renewal Checkbox ===
+=== Paid Memberships Pro - Auto-Renewal Checkbox ===
 Contributors: strangerstudios
 Tags: pmpro, paid memberships pro, members, memberships, auto-renewal, renewal, checkbox
-Requires at least: 4
-Tested up to: 6.4
-Stable tag: 0.3.2
+Requires at least: 5.4
+Tested up to: 6.6
+Stable tag: 0.3.3
+License: GPLv3
+License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
 Make auto renewal optional at checkout with a checkbox.
 
@@ -20,6 +22,10 @@ This does not work with PMPro discount codes yet. If a customer uses a discount 
 1. Edit your membership levels and set the "Auto Renewal" options for each level.
 
 == Changelog ==
+= 0.3.3 - 2024-09-24
+* ENHANCEMENT: Updated UI for compatibility with PMPro v3.1. #35 (@MaximilianoRicoTabo, @kimcoleman)
+* BUG FIX: Added compatibility for prefixed discount code request var. #36 (@dparker1005)
+
 = 0.3.2 - 2024-02-23 =
 * ENHANCEMENT: Added compatibility with Multiple Memberships Per User for the PMPro v3.0 update. #33 (@dparker1005)
 
