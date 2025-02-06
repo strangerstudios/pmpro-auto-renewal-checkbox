@@ -1,22 +1,23 @@
-# Copyright (C) 2024 Paid Memberships Pro
-# This file is distributed under the same license as the Paid Memberships Pro - Auto-Renewal Checkbox plugin.
+# Copyright (C) 2025 Paid Memberships Pro
+# This file is distributed under the GPL-3.0.
 msgid ""
 msgstr ""
-"Project-Id-Version: Paid Memberships Pro - Auto-Renewal Checkbox 0.3.2\n"
+"Project-Id-Version: Paid Memberships Pro - Auto-Renewal Checkbox 0.4\n"
 "Report-Msgid-Bugs-To: info@paidmembershipspro.com\n"
 "Last-Translator: Paid Memberships Pro <info@paidmembershipspro.com>\n"
 "Language-Team: Paid Memberships Pro <info@paidmembershipspro.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-02-23T17:25:25+00:00\n"
+"POT-Creation-Date: 2025-02-06T18:09:20+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.10.0\n"
+"X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: pmpro-auto-renewal-checkbox\n"
 
 #: pmpro-auto-renewal-checkbox.php:36
 #: pmpro-auto-renewal-checkbox.php:66
 #: pmpro-auto-renewal-checkbox.php:57
+#: pmpro-auto-renewal-checkbox.php:58
 msgid "Auto-Renewal Settings"
 msgstr "Einstellungen zur automatischen Verlängerung"
 
@@ -29,6 +30,7 @@ msgstr "Ändere diese Einstellung, so dass die automatische Verlängerung beim C
 #: pmpro-auto-renewal-checkbox.php:41
 #: pmpro-auto-renewal-checkbox.php:71
 #: pmpro-auto-renewal-checkbox.php:62
+#: pmpro-auto-renewal-checkbox.php:63
 msgid "Auto-Renewal Optional?"
 msgstr "Automatische Verlängerung optional?"
 
@@ -41,18 +43,21 @@ msgstr "Nein. Bei allen Checkouts wird eine wiederkehrende Abrechnung eingericht
 #: pmpro-auto-renewal-checkbox.php:45
 #: pmpro-auto-renewal-checkbox.php:75
 #: pmpro-auto-renewal-checkbox.php:66
+#: pmpro-auto-renewal-checkbox.php:67
 msgid "Yes. Default to unchecked."
 msgstr "Ja. Standardmäßig nicht aktiviert."
 
 #: pmpro-auto-renewal-checkbox.php:46
 #: pmpro-auto-renewal-checkbox.php:76
 #: pmpro-auto-renewal-checkbox.php:67
+#: pmpro-auto-renewal-checkbox.php:68
 msgid "Yes. Default to checked."
 msgstr "Ja. Standardmäßig aktiviert."
 
 #: pmpro-auto-renewal-checkbox.php:147
 #: pmpro-auto-renewal-checkbox.php:177
 #: pmpro-auto-renewal-checkbox.php:168
+#: pmpro-auto-renewal-checkbox.php:171
 msgid "Would you like to set up automatic renewals?"
 msgstr "Soll sich die Mitgliedschaft automatisch verlängern?"
 
@@ -60,6 +65,7 @@ msgstr "Soll sich die Mitgliedschaft automatisch verlängern?"
 #: pmpro-auto-renewal-checkbox.php:161
 #: pmpro-auto-renewal-checkbox.php:193
 #: pmpro-auto-renewal-checkbox.php:184
+#: pmpro-auto-renewal-checkbox.php:188
 #, php-format
 msgid "Yes, renew at %s"
 msgstr "Ja, die Mitgliedschaft verlängert sich automatisch für <strong>%s</strong>"
@@ -67,24 +73,28 @@ msgstr "Ja, die Mitgliedschaft verlängert sich automatisch für <strong>%s</str
 #: pmpro-auto-renewal-checkbox.php:480
 #: pmpro-auto-renewal-checkbox.php:353
 #: pmpro-auto-renewal-checkbox.php:377
+#: pmpro-auto-renewal-checkbox.php:428
 msgid "Docs"
 msgstr "Docs"
 
 #: pmpro-auto-renewal-checkbox.php:480
 #: pmpro-auto-renewal-checkbox.php:353
 #: pmpro-auto-renewal-checkbox.php:377
+#: pmpro-auto-renewal-checkbox.php:428
 msgid "View Documentation"
 msgstr "Dokumentation anzeigen"
 
 #: pmpro-auto-renewal-checkbox.php:481
 #: pmpro-auto-renewal-checkbox.php:354
 #: pmpro-auto-renewal-checkbox.php:378
+#: pmpro-auto-renewal-checkbox.php:429
 msgid "Support"
 msgstr "Support"
 
 #: pmpro-auto-renewal-checkbox.php:481
 #: pmpro-auto-renewal-checkbox.php:354
 #: pmpro-auto-renewal-checkbox.php:378
+#: pmpro-auto-renewal-checkbox.php:429
 msgid "Visit Customer Support Forum"
 msgstr "Kunden-Support-Forum besuchen"
 
@@ -111,4 +121,12 @@ msgstr ""
 #. Author URI of the plugin
 #: pmpro-auto-renewal-checkbox.php
 msgid "https://www.paidmembershipspro.com"
+msgstr ""
+
+#: pmpro-auto-renewal-checkbox.php:59
+msgid "Change this setting to make auto-renewals optional at checkout."
+msgstr ""
+
+#: pmpro-auto-renewal-checkbox.php:66
+msgid "No. All checkouts will set up recurring billing."
 msgstr ""
