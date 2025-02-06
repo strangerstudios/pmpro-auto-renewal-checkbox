@@ -3,7 +3,7 @@
  * Plugin Name: Paid Memberships Pro - Auto-Renewal Checkbox
  * Plugin URI: https://www.paidmembershipspro.com/add-ons/auto-renewal-checkbox-membership-checkout/
  * Description: Make auto-renewal optional at checkout with a checkbox.
- * Version: 0.3.3
+ * Version: 0.4
  * Author: Paid Memberships Pro
  * Author URI: https://www.paidmembershipspro.com
  * Text Domain: pmpro-auto-renewal-checkbox
@@ -315,7 +315,7 @@ function pmproarc_profile_start_date_delay_subscription($startdate, $order) {
  * Hook the legacy pmproarc_profile_start_date_delay_subscription() function if running a PMPro version before v3.4.
  * Otherwise, pmproarc_checkout_level_extend_memberships() will be used to extend memberships when purchasing recurring levels.
  *
- * @since TBD
+ * @since 0.4
  */
 function pmprosd_hook_pmpro_profile_start_date() {
 	if ( defined( 'PMPRO_VERSION' ) && version_compare( PMPRO_VERSION, '3.4', '<' ) ) {
@@ -327,7 +327,7 @@ add_action( 'init', 'pmprosd_hook_pmpro_profile_start_date' );
 /*
  * If checking out for a level that the user already has, extend the membership from their next payment date or expiration date.
  *
- * @since TBD Updated to extend memberships when purchasing recurring levels as well.
+ * @since 0.4 Updated to extend memberships when purchasing recurring levels as well.
  *
  * @param object $level The level object.
  */

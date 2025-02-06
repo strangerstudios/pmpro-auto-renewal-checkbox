@@ -2,8 +2,8 @@
 Contributors: strangerstudios
 Tags: pmpro, paid memberships pro, members, memberships, auto-renewal, renewal, checkbox
 Requires at least: 5.4
-Tested up to: 6.6
-Stable tag: 0.3.3
+Tested up to: 6.7
+Stable tag: 0.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -22,6 +22,9 @@ This does not work with PMPro discount codes yet. If a customer uses a discount 
 1. Edit your membership levels and set the "Auto Renewal" options for each level.
 
 == Changelog ==
+= 0.4 - 2025-02-06 =
+* BUG FIX/ENHANCEMENT: Now setting the profile start date directly on the checkout level object for sites running PMPro v3.4+. #38 (@dparker1005)
+
 = 0.3.3 - 2024-09-24
 * ENHANCEMENT: Updated UI for compatibility with PMPro v3.1. #35 (@MaximilianoRicoTabo, @kimcoleman)
 * BUG FIX: Added compatibility for prefixed discount code request var. #36 (@dparker1005)
