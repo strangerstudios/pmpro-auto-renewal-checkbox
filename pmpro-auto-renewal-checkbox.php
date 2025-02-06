@@ -310,7 +310,6 @@ function pmproarc_profile_start_date_delay_subscription($startdate, $order) {
     
 	return $startdate;
 }
-add_filter( 'pmpro_profile_start_date', 'pmproarc_profile_start_date_delay_subscription', 9, 2 );
 
 /**
  * Hook the legacy pmproarc_profile_start_date_delay_subscription() function if running a PMPro version before v3.4.
@@ -320,7 +319,7 @@ add_filter( 'pmpro_profile_start_date', 'pmproarc_profile_start_date_delay_subsc
  */
 function pmprosd_hook_pmpro_profile_start_date() {
 	if ( version_compare( PMPRO_VERSION, '3.4', '<' ) ) {
-		add_filter( 'pmpro_profile_start_date', 'pmproarc_profile_start_date_delay_subscription', 10, 2 );
+		add_filter( 'pmpro_profile_start_date', 'pmproarc_profile_start_date_delay_subscription', 9, 2 );
 	}
 }
 add_action( 'init', 'pmprosd_hook_pmpro_profile_start_date' );
