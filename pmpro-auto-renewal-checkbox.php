@@ -310,15 +310,44 @@ function pmproarc_profile_start_date_delay_subscription($startdate, $order) {
     
 	return $startdate;
 }
-add_filter( 'pmpro_profile_start_date', 'pmproarc_profile_start_date_delay_subscription', 9, 2 );
+
+/**
+ * Hook the legacy pmproarc_profile_start_date_delay_subscription() function if running a PMPro version before v3.4.
+ * Otherwise, pmproarc_checkout_level_extend_memberships() will be used to extend memberships when purchasing recurring levels.
+ *
+ * @since TBD
+ */
+function pmprosd_hook_pmpro_profile_start_date() {
+	if ( defined( 'PMPRO_VERSION' ) && version_compare( PMPRO_VERSION, '3.4', '<' ) ) {
+		add_filter( 'pmpro_profile_start_date', 'pmproarc_profile_start_date_delay_subscription', 9, 2 );
+	}
+}
+add_action( 'init', 'pmprosd_hook_pmpro_profile_start_date' );
 
 /*
-	If checking out without recurring with an active recurring subscription for the same level,
-	extend from the next payment date instead of the date of checkout.
-*/
+ * If checking out for a level that the user already has, extend the membership from their next payment date or expiration date.
+ *
+ * @since TBD Updated to extend memberships when purchasing recurring levels as well.
+ *
+ * @param object $level The level object.
+ */
 function pmproarc_checkout_level_extend_memberships( $level ) {
-	//does this level expire? are they an existing user of this level?
-	if ( ! empty( $level ) && ! empty( $level->expiration_number ) && pmpro_hasMembershipLevel( $level->id ) ) {
+	// If we don't have a level for some reason, bail.
+	if ( empty( $level ) ) {
+		return $level;
+	}
+
+	// If the user does not already have this level, bail.
+	$user_level = pmpro_getSpecificMembershipLevelForUser( get_current_user_id(), $level->id );
+	if ( empty( $user_level ) ) {
+		return $level;
+	}
+
+	// Check whether an expiring or recurring level is being purchased.
+	if ( ! empty( $level->expiration_number ) ) {
+		// The level being purchased has an expiration date.
+		// Core PMPro will extend the expiration date if the user already has a level with an expiration date (see pmpro_checkout_level_extend_memberships()).
+		// So here, we only need to extend the expiration date if the user has a subscription for this level.
 		if ( class_exists( 'PMPro_Subscription' ) ) {
 			// Check if the user has a subscription for this level.
 			$subscriptions = PMPro_Subscription::get_subscriptions_for_user( get_current_user_id(), $level->id );
@@ -369,6 +398,21 @@ function pmproarc_checkout_level_extend_memberships( $level ) {
 			$level->expiration_number = $total_days;
 			$level->expiration_period = "Day";
 		}
+	} elseif ( pmpro_isLevelRecurring( $level ) ) {
+		// The level being purchased is recurring.
+		// If the user already has a recurring level, they shouldn't need to check out again.
+		// So here, we only want to extend the profile start date if the user currently has an expiring level.
+		if ( empty( $user_level->enddate ) ) {
+			return $level;
+		}
+
+		// If a profile start date is already set (possibly by Subscription Delays or prorations), respect that.
+		if ( ! empty( $level->profile_start_date ) ) {
+			return $level;
+		}
+
+		// Add the billing cycle and number of periods to the user's current expiration date.
+		$level->profile_start_date = date( 'Y-m-d H:i:s', strtotime( '+' . $level->cycle_number . ' ' . $level->cycle_period, $user_level->enddate ) );
 	}
 
 	return $level;
