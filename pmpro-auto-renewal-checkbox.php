@@ -318,7 +318,7 @@ function pmproarc_profile_start_date_delay_subscription($startdate, $order) {
  * @since TBD
  */
 function pmprosd_hook_pmpro_profile_start_date() {
-	if ( version_compare( PMPRO_VERSION, '3.4', '<' ) ) {
+	if ( defined( 'PMPRO_VERSION' ) && version_compare( PMPRO_VERSION, '3.4', '<' ) ) {
 		add_filter( 'pmpro_profile_start_date', 'pmproarc_profile_start_date_delay_subscription', 9, 2 );
 	}
 }
