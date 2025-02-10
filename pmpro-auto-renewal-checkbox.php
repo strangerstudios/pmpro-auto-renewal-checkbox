@@ -317,12 +317,12 @@ function pmproarc_profile_start_date_delay_subscription($startdate, $order) {
  *
  * @since 0.4
  */
-function pmprosd_hook_pmpro_profile_start_date() {
+function pmproarc_hook_pmpro_profile_start_date() {
 	if ( defined( 'PMPRO_VERSION' ) && version_compare( PMPRO_VERSION, '3.4', '<' ) ) {
 		add_filter( 'pmpro_profile_start_date', 'pmproarc_profile_start_date_delay_subscription', 9, 2 );
 	}
 }
-add_action( 'init', 'pmprosd_hook_pmpro_profile_start_date' );
+add_action( 'init', 'pmproarc_hook_pmpro_profile_start_date' );
 
 /*
  * If checking out for a level that the user already has, extend the membership from their next payment date or expiration date.
