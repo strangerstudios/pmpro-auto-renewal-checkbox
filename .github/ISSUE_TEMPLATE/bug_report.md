@@ -1,6 +1,6 @@
 ---
 name: "🐛 Bug Report"
-about: Report a bug if something isn't working as expected in Paid Memberships Pro.
+about: Report a bug if something isn't working as expected in Paid Memberships Pro - Auto-Renewal Checkbox.
 title: ''
 labels: 'bug'
 assignees: ''
