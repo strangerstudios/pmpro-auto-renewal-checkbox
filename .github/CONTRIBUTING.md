@@ -1,4 +1,4 @@
-# Contribute to Paid Memberships Pro
+# Contribute to Paid Memberships Pro - Auto-Renewal Checkbox
 
 Paid Memberships Pro is the "community solution" for membership sites on WordPress, and so contributions of all kinds are appreciated.
 

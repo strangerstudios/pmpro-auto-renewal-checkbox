@@ -9,7 +9,7 @@
 
 Add a checkbox to the Membership Checkout form that gives members the option to set up automatic recurring payments or make a one-time payment for a fixed-term membership.
 
-For more information please visit [www.paidmembershipspro.com/add-ons/auto-renewal-checkbox/](https://www.paidmembershipspro.com/add-ons/auto-renewal-checkbox-membership-checkout/)
+For more information please visit [Paid Memberships Pro - Auto-Renewal Checkbox](https://www.paidmembershipspro.com/add-ons/auto-renewal-checkbox-membership-checkout/)
 
 ## Installation ##
 For detailed installation steps, visit the [documentation](https://www.paidmembershipspro.com/add-ons/auto-renewal-checkbox-membership-checkout/) page.
