@@ -56,7 +56,13 @@ function pmproarc_pmpro_membership_level_after_other_settings() {
 ?>
 <div id="arc_setting_div">
 	<h3 class="topborder"><?php esc_html_e('Auto-Renewal Settings', 'pmpro-auto-renewal-checkbox');?></h3>
-	<p><?php esc_html_e( 'Change this setting to make auto-renewals optional at checkout.', 'pmpro-auto-renewal-checkbox' );?></p>
+	<p>
+		<?php esc_html_e( 'Change this setting to make auto-renewals optional at checkout.', 'pmpro-auto-renewal-checkbox' );?>
+		<?php
+		$auto_renewal_link = '<a title="' . esc_attr__( 'Auto-Renewal Checkbox Add On', 'pmpro-auto-renewal-checkbox' ) . '" target="_blank" rel="nofollow noopener" href="https://www.paidmembershipspro.com/add-ons/auto-renewal-checkbox-membership-checkout/?utm_source=plugin&utm_medium=pmpro-auto-renewal-checkbox&utm_campaign=add-ons&utm_content=&utm_term=">' . esc_html__( 'Auto-Renewal Settings', 'pmpro-auto-renewal-checkbox' ) . '</a>';
+		printf( esc_html__( 'Learn more about %s.', 'pmpro-auto-renewal-checkbox' ), $auto_renewal_link ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		?>
+	</p>
 	<table>
 	<tbody class="form-table">
 		<tr>
