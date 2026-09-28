@@ -11,6 +11,10 @@
  * License: GPL-3.0
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /*
 	Settings, Globals and Constants
 */
@@ -51,7 +55,7 @@ add_action( 'init', 'pmproarc_load_cancel_on_next_payment_date' );
 */
 //show the checkbox on the edit level page
 function pmproarc_pmpro_membership_level_after_other_settings() {
-	$level_id = intval($_REQUEST['edit']);
+	$level_id = isset( $_REQUEST['edit'] ) ? intval( $_REQUEST['edit'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only level ID used to display the edit level form.
 	$options = pmproarc_getOptions($level_id);
 ?>
 <div id="arc_setting_div">
@@ -102,10 +106,12 @@ add_action('pmpro_membership_level_after_other_settings', 'pmproarc_pmpro_member
 //save auto-renewal settings when the level is saved/added
 function pmproarc_pmpro_save_membership_level($level_id) {
 	//get values
+	// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Nonce and capability verified by PMPro core before pmpro_save_membership_level fires (adminpages/membershiplevels.php).
 	if(isset($_REQUEST['arc_setting']))
 		$arc_setting = intval($_REQUEST['arc_setting']);
 	else
 		$arc_setting = 0;
+	// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 	//build array
 	$options = array(
@@ -150,6 +156,7 @@ function pmproarc_pmpro_checkout_boxes() {
 	if(!pmpro_isLevelRecurring($olevel))
 		return;
 
+	// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only checkout display; PMPro core verifies pmpro_checkout_nonce before processing checkout.
 	//not if this is an addon package
 	if(!empty($_REQUEST['ap']) || !empty($_SESSION['ap']))
 		return;
@@ -161,11 +168,12 @@ function pmproarc_pmpro_checkout_boxes() {
 	if(isset($_REQUEST['autorenew_present']) && isset($_REQUEST['autorenew']))
 		$autorenew = intval($_REQUEST['autorenew']);
 	elseif(isset($_SESSION['autorenew']))
-		$autorenew = $_SESSION['autorenew'];
+		$autorenew = intval( $_SESSION['autorenew'] );
 	elseif($options['setting'] == 2)
 		$autorenew = 1;
 	else
 		$autorenew = 0;
+	// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 	if(!$pmpro_review) {
 		?>
@@ -191,7 +199,7 @@ function pmproarc_pmpro_checkout_boxes() {
 									$temp_level->initial_payment = $temp_level->billing_amount;
 	
 									/* translators: Level Cost */
-									printf(__('Yes, renew at %s', 'pmpro-auto-renewal-checkbox'), pmpro_getLevelCost($temp_level, false, true));
+									echo wp_kses_post( sprintf( __( 'Yes, renew at %s', 'pmpro-auto-renewal-checkbox' ), pmpro_getLevelCost( $temp_level, false, true ) ) );
 								?>
 							</label>
 						</div> <!-- end pmpro_form_field -->
@@ -212,16 +220,18 @@ add_action('pmpro_checkout_boxes', 'pmproarc_pmpro_checkout_boxes', 15);
 
 //save autorenew to session for PayPal Express
 function pmproarc_pmpro_paypalexpress_session_vars() {
+	// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Runs during PMPro checkout processing, after core verifies pmpro_checkout_nonce (preheaders/checkout.php).
 	if(isset($_REQUEST['autorenew_present']) && isset($_REQUEST['autorenew']))
 		$autorenew = intval($_REQUEST['autorenew']);
 	else
 		$autorenew = 0;
+	// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 	$_SESSION['autorenew'] = $autorenew;
 	$_SESSION['autorenew_present'] = 1;
 }
 add_action('pmpro_paypalexpress_session_vars', 'pmproarc_pmpro_paypalexpress_session_vars');
-add_action('pmpro_before_send_to_twocheckout', 'pmprorh_rf_pmpro_paypalexpress_session_vars', 10, 0);
+add_action('pmpro_before_send_to_twocheckout', 'pmproarc_pmpro_paypalexpress_session_vars', 10, 0);
 
 //update level based on selection
 function pmproarc_checkout_level($level) {
@@ -240,6 +250,7 @@ function pmproarc_checkout_level($level) {
 	if(!pmpro_isLevelRecurring($level))
 		return $level;
 
+	// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only; only adjusts the checkout level object. PMPro core verifies pmpro_checkout_nonce before processing checkout.
 	//not if addon package
 	if(!empty($_REQUEST['ap']) || !empty($_SESSION['ap']))
 		return $level;
@@ -254,11 +265,12 @@ function pmproarc_checkout_level($level) {
 	elseif(isset($_REQUEST['autorenew_present']))
 		$autorenew = intval($_REQUEST['autorenew']);
 	elseif(isset($_SESSION['autorenew_present']))
-		$autorenew = intval($_SESSION['autorenew']);
+		$autorenew = intval($_SESSION['autorenew']); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated -- autorenew is always set alongside autorenew_present in pmproarc_pmpro_paypalexpress_session_vars().
 	elseif($options['setting'] == 2)
 		$autorenew = 1;
 	else
 		$autorenew = 0;
+	// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 	if(!$autorenew) {
 		//setup expiration
