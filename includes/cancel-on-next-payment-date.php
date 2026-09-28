@@ -104,7 +104,7 @@ function pmproconpd_pmpro_change_level( $level, $user_id, $old_level_status, $ca
 		} else {
 			// Check the next payment date passed in or via API.
 			// Only trust a passed in next payment date during the PayPal IPN, which core validates with PayPal.
-			$is_paypal_ipn = pmpro_doing_webhook( 'paypal' );
+			$is_paypal_ipn = defined( 'PMPRO_DOING_WEBHOOK' ) && 'paypal' === PMPRO_DOING_WEBHOOK;
 			if ( $is_paypal_ipn && ! empty( $_POST['next_payment_date'] ) && 'N/A' !== $_POST['next_payment_date'] ) {
 				// Cancellation is being initiated from the IPN.
 				$pmpro_next_payment_timestamp = strtotime( $_POST['next_payment_date'], current_time( 'timestamp' ) );
