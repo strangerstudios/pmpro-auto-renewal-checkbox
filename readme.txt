@@ -2,8 +2,8 @@
 Contributors: strangerstudios
 Tags: pmpro, paid memberships pro, members, memberships, auto-renewal, renewal, checkbox
 Requires at least: 5.4
-Tested up to: 6.9
-Stable tag: 0.4.2
+Tested up to: 7.1
+Stable tag: 0.4.3
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -22,6 +22,12 @@ This does not work with PMPro discount codes yet. If a customer uses a discount 
 1. Edit your membership levels and set the "Auto Renewal" options for each level.
 
 == Changelog ==
+= 0.4.3 - 2026-09-28 =
+* SECURITY: The PayPal Express next payment date is now only read from validated PayPal IPN requests when cancelling. #44 (@dparker1005)
+* SECURITY: Escaped the auto-renewal checkbox label at checkout and added direct file access protection. #43 (@dparker1005)
+* ENHANCEMENT: Resolved Plugin Check security warnings. #43 (@dparker1005)
+* BUG FIX: Fixed a fatal error at 2Checkout checkout on PHP 8 and saved the auto-renew choice before sending members to 2Checkout. #43 (@dparker1005)
+
 = 0.4.2 - 2026-05-05 =
 * ENHANCEMENT: Added a "Learn more" link to the Auto-Renewal Settings section on the Edit Membership Level admin page. #41 (@kimcoleman)
 
