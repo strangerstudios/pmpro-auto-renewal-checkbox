@@ -77,7 +77,7 @@ function pmproconpd_pmpro_change_level( $level, $user_id, $old_level_status, $ca
 		);
 	}
 
-	// phpcs:disable WordPress.Security.NonceVerification.Missing -- Gateway IPN/webhook requests are validated by PMPro core with the gateway. On other requests, txn_type can only end access sooner, and next_payment_date is only read during the PayPal IPN.
+	// phpcs:disable WordPress.Security.NonceVerification.Missing -- Gateway IPN/webhook requests are validated by PMPro core with the gateway. This file only loads before PMPro 3.0, where the cancel page has no nonce, so request values that could extend access must only be trusted during a webhook.
 	// Figure out the next payment timestamp.
 	if ( empty( $check_level ) || ( ! empty( $check_level->enddate ) && '0000-00-00 00:00:00' !== $check_level->enddate ) ) {
 		// Level already has an end date. Set to false so we really cancel.
