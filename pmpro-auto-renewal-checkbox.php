@@ -424,6 +424,11 @@ function pmproarc_checkout_level_extend_memberships( $level ) {
 			return $level;
 		}
 
+		// Only extend from an expiration date that is still in the future.
+		if ( $user_level->enddate <= current_time( 'timestamp' ) ) {
+			return $level;
+		}
+
 		// If a profile start date is already set (possibly by Subscription Delays or prorations), respect that.
 		if ( ! empty( $level->profile_start_date ) ) {
 			return $level;
