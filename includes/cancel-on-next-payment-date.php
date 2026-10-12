@@ -41,7 +41,7 @@ function pmproconpd_pmpro_change_level( $level, $user_id, $old_level_status, $ca
 		return $level;
 	}
 
-	$is_on_cancel_page = is_page( $pmpro_pages['cancel'] );
+	$is_on_cancel_page = ! empty( $pmpro_pages['cancel'] ) && is_page( $pmpro_pages['cancel'] );
 	$is_on_profile_page = is_admin() && ( ! empty( $_REQUEST['from'] ) && 'profile' === $_REQUEST['from'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only routing check.
 
 	// Bypass if not on cancellation page or a non-profile admin page.
