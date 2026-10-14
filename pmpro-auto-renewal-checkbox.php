@@ -281,9 +281,10 @@ function pmproarc_checkout_level($level) {
 		$level->billing_amount = 0;
 		$level->cycle_number = 0;
 	} else {
-        // Disable Set Expiration Date
+        // Disable Set Expiration Date (the Add On, and the same feature in PMPro core).
         remove_filter( 'pmpro_checkout_level', 'pmprosed_pmpro_checkout_level' );
         remove_filter( 'pmpro_discount_code_level', 'pmprosed_pmpro_checkout_level', 10, 2 );
+        remove_filter( 'pmpro_checkout_level', 'pmpro_checkout_level_set_expiration_date' );
     }
 
 	return $level;
