@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-3.0.
 msgid ""
 msgstr ""
-"Project-Id-Version: Paid Memberships Pro - Auto-Renewal Checkbox 0.4.3\n"
+"Project-Id-Version: Paid Memberships Pro - Auto-Renewal Checkbox 0.4.4\n"
 "Report-Msgid-Bugs-To: info@paidmembershipspro.com\n"
 "Last-Translator: Paid Memberships Pro <info@paidmembershipspro.com>\n"
 "Language-Team: Paid Memberships Pro <info@paidmembershipspro.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-28T18:18:40+00:00\n"
+"POT-Creation-Date: 2026-10-16T17:20:31+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pmpro-auto-renewal-checkbox\n"
@@ -76,6 +76,7 @@ msgstr ""
 #: pmpro-auto-renewal-checkbox.php:188
 #: pmpro-auto-renewal-checkbox.php:194
 #: pmpro-auto-renewal-checkbox.php:202
+#: pmpro-auto-renewal-checkbox.php:206
 #, php-format
 msgid "Yes, renew at %s"
 msgstr ""
@@ -86,6 +87,7 @@ msgstr ""
 #: pmpro-auto-renewal-checkbox.php:428
 #: pmpro-auto-renewal-checkbox.php:434
 #: pmpro-auto-renewal-checkbox.php:446
+#: pmpro-auto-renewal-checkbox.php:472
 msgid "Docs"
 msgstr ""
 
@@ -95,6 +97,7 @@ msgstr ""
 #: pmpro-auto-renewal-checkbox.php:428
 #: pmpro-auto-renewal-checkbox.php:434
 #: pmpro-auto-renewal-checkbox.php:446
+#: pmpro-auto-renewal-checkbox.php:472
 msgid "View Documentation"
 msgstr ""
 
@@ -104,6 +107,7 @@ msgstr ""
 #: pmpro-auto-renewal-checkbox.php:429
 #: pmpro-auto-renewal-checkbox.php:435
 #: pmpro-auto-renewal-checkbox.php:447
+#: pmpro-auto-renewal-checkbox.php:473
 msgid "Support"
 msgstr ""
 
@@ -113,6 +117,7 @@ msgstr ""
 #: pmpro-auto-renewal-checkbox.php:429
 #: pmpro-auto-renewal-checkbox.php:435
 #: pmpro-auto-renewal-checkbox.php:447
+#: pmpro-auto-renewal-checkbox.php:473
 msgid "Visit Customer Support Forum"
 msgstr ""
 
@@ -162,4 +167,8 @@ msgstr ""
 #: pmpro-auto-renewal-checkbox.php:67
 #, php-format
 msgid "Learn more about %s."
+msgstr ""
+
+#: pmpro-auto-renewal-checkbox.php:203
+msgid "Yes, renew automatically"
 msgstr ""
