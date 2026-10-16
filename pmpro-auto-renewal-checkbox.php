@@ -218,6 +218,21 @@ function pmproarc_pmpro_checkout_boxes() {
 }
 add_action('pmpro_checkout_boxes', 'pmproarc_pmpro_checkout_boxes', 15);
 
+/**
+ * Hide the auto-renewal checkbox when a discount code is applied via AJAX.
+ *
+ * @param string       $discount_code    The discount code.
+ * @param int          $discount_code_id The discount code ID.
+ * @param int          $level_id         The membership level ID.
+ * @param object|false $code_level       The discounted level, or false for an invalid code.
+ */
+function pmproarc_applydiscountcode_return_js( $discount_code, $discount_code_id, $level_id, $code_level ) {
+	if ( ! empty( $code_level ) ) {
+		echo 'jQuery( "#pmpro_autorenewal_checkbox" ).hide();';
+	}
+}
+add_action( 'pmpro_applydiscountcode_return_js', 'pmproarc_applydiscountcode_return_js', 10, 4 );
+
 //save autorenew to session for PayPal Express
 function pmproarc_pmpro_paypalexpress_session_vars() {
 	// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Runs during PMPro checkout processing, after core verifies pmpro_checkout_nonce (preheaders/checkout.php).
