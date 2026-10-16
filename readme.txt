@@ -3,7 +3,7 @@ Contributors: strangerstudios
 Tags: pmpro, paid memberships pro, members, memberships, auto-renewal, renewal, checkbox
 Requires at least: 5.4
 Tested up to: 7.1
-Stable tag: 0.4.3
+Stable tag: 0.4.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -13,7 +13,7 @@ Make auto renewal optional at checkout with a checkbox.
 
 Adds an option to PMPro membership levels: Auto Renewal Optional. If set and a recurring billing amount is present, a checkbox is added to the checkout page to optional enable auto renewal.
 
-This does not work with PMPro discount codes yet. If a customer uses a discount code, the auto renewal checkbox will be ignored and the default recurring billing settings from the discount code will be used.
+The auto-renewal checkbox does not apply to PMPro discount codes. If a customer uses a discount code, the checkbox is hidden and the recurring billing settings from the discount code are used.
 
 == Installation ==
 
@@ -22,6 +22,13 @@ This does not work with PMPro discount codes yet. If a customer uses a discount 
 1. Edit your membership levels and set the "Auto Renewal" options for each level.
 
 == Changelog ==
+= 0.4.4 - 2026-10-16 =
+* BUG FIX: Auto-renewing checkouts now also skip set expiration dates applied by PMPro core, which includes the Set Expiration Dates functionality as of PMPro v3.9. This keeps recurring members from expiring on a fixed date. #49 (@dparker1005)
+* BUG FIX: Fixed an issue where renewing a recurring level after the current membership's end date had passed could add an incorrect trial period before the first recurring payment. #45 (@dparker1005)
+* BUG FIX: The auto-renewal checkbox is now hidden after a valid discount code is applied at checkout. #47 (@dparker1005)
+* BUG FIX: The auto-renewal checkbox label now reads "Yes, renew automatically" when the level cost text is empty, such as for Variable Pricing levels. #46 (@dparker1005)
+* BUG FIX: Fixed an issue on PMPro versions before 3.0 where cancellations on any page could be delayed until the next payment date if no Cancel page was set. #48 (@dparker1005)
+
 = 0.4.3 - 2026-09-28 =
 * SECURITY: The PayPal Express next payment date is now only read from validated PayPal IPN requests when cancelling. #44 (@dparker1005)
 * SECURITY: Escaped the auto-renewal checkbox label at checkout and added direct file access protection. #43 (@dparker1005)
