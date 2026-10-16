@@ -198,8 +198,13 @@ function pmproarc_pmpro_checkout_boxes() {
 									add_filter("pmpro_checkout_level", "pmproarc_checkout_level", 7);
 									$temp_level->initial_payment = $temp_level->billing_amount;
 	
-									/* translators: Level Cost */
-									echo wp_kses_post( sprintf( __( 'Yes, renew at %s', 'pmpro-auto-renewal-checkbox' ), pmpro_getLevelCost( $temp_level, false, true ) ) );
+									$level_cost = pmpro_getLevelCost( $temp_level, false, true );
+									if ( '' === trim( wp_strip_all_tags( $level_cost ) ) ) {
+										echo esc_html__( 'Yes, renew automatically', 'pmpro-auto-renewal-checkbox' );
+									} else {
+										/* translators: Level Cost */
+										echo wp_kses_post( sprintf( __( 'Yes, renew at %s', 'pmpro-auto-renewal-checkbox' ), $level_cost ) );
+									}
 								?>
 							</label>
 						</div> <!-- end pmpro_form_field -->
